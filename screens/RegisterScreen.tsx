@@ -24,7 +24,7 @@ const RegisterScreen = ({ navigation }: Props) => {
   const registerUser = () => {
     setLoading(true); // Đặt trạng thái loading để hiển thị ActivityIndicator
   
-    Axios.post('http://localhost:3000/user', user) // Gửi POST request với dữ liệu người dùng
+    Axios.post('http://localhost:3000/users', user) // Gửi POST request với dữ liệu người dùng
       .then((response) => {
         setLoading(false); 
         console.log('Đăng kí thành công'); 
