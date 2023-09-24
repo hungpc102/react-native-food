@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator,Alert ,KeyboardAvoidingView} from 'react-native';
 import stylesB from '../assets/css/stylesB'
-import Axios from 'axios';
+import axios from 'axios';
 
 
 import {Props } from '../services/interfaces/navigationTypes';
@@ -24,7 +24,7 @@ const RegisterScreen = ({ navigation }: Props) => {
   const registerUser = () => {
     setLoading(true); // Đặt trạng thái loading để hiển thị ActivityIndicator
   
-    Axios.post('http://localhost:3000/users', user) // Gửi POST request với dữ liệu người dùng
+    axios.post('http://localhost:3000/users', user) // Gửi POST request với dữ liệu người dùng
       .then((response) => {
         setLoading(false); 
         console.log('Đăng kí thành công'); 
