@@ -1,20 +1,33 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import LoginScreen from './screens/LoginScreen';
+import RegisterScreen from './screens/RegisterScreen';
+import HomePage1 from './screens/HomePage1'
+import HelpPage from './screens/HelpPage';
+import HomePage2 from './screens/HomePage2';
+import ManagerScreen from './screens/manageScreen'
 
-export default function App() {
+const Stack = createStackNavigator();
+
+const App = () => {
+  const commonScreenOptions = {
+    headerTitle: '',
+    headerBackTitle: 'Trở lại',
+    headerShown: true,
+  };
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Register">
+        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false}}/>
+        <Stack.Screen name="Register" component={RegisterScreen} options={commonScreenOptions} />
+        <Stack.Screen name="HomePage1" component={HomePage1} options={commonScreenOptions} />
+        <Stack.Screen name="HelpPage" component={HelpPage} options={commonScreenOptions} />
+        <Stack.Screen name="HomePage2" component={HomePage2} options={commonScreenOptions} />
+        <Stack.Screen name="ManagerScreen" component={ManagerScreen} options={commonScreenOptions} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
