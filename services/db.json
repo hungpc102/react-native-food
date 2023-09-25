@@ -6,6 +6,62 @@
       "USER_EMAIL": "Hung@gmail.com",
       "USER_PASSWORD": "123456",
       "USER_PHONE": "0123456789"
+    },
+    {
+      "user_name": "",
+      "user_email": "",
+      "user_password": "",
+      "user_phone": "",
+      "id": 2
+    },
+    {
+      "user_name": "",
+      "user_email": "",
+      "user_password": "",
+      "user_phone": "",
+      "id": 3
+    },
+    {
+      "user_name": "",
+      "user_email": "",
+      "user_password": "",
+      "user_phone": "",
+      "id": 4
+    },
+    {
+      "user_name": "",
+      "user_email": "",
+      "user_password": "",
+      "user_phone": "",
+      "id": 5
+    },
+    {
+      "user_name": "",
+      "user_email": "h@gmail.com",
+      "user_password": "123456",
+      "user_phone": "",
+      "id": 6
+    },
+    {
+      "user_name": "Hng",
+      "user_email": "h@gmail.com",
+      "user_password": "123456",
+      "user_phone": "1234567890",
+      "id": 7
+    },
+    {
+      "user_name": "as",
+      "user_email": "h@gmail.com",
+      "user_password": "123456",
+      "user_phone": "1234567890",
+      "id": 8
+    },
+    {
+      "user_name": "as",
+      "user_email": "h@gmail.com",
+      "user_password": "123456",
+      "user_phone": "1234567890",
+      "id": 9
     }
   ]
 }

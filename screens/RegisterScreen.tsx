@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator,Alert ,KeyboardAvoidingView} from 'react-native';
 import stylesB from '../assets/css/stylesB'
 import axios from 'axios';
+import {validateEmail, validatePassword} from '../utils/Validate'
 
 
 import {Props } from '../services/interfaces/navigationTypes';
@@ -14,6 +15,8 @@ const RegisterScreen = ({ navigation }: Props) => {
   const [name, setName] = useState('')
   const [loading, setLoading] = useState(false);
   
+  const serverURL = 'http:192.168.1.5:3000'
+
   const user = {
     "user_name": name,
     "user_email": email,
@@ -22,18 +25,46 @@ const RegisterScreen = ({ navigation }: Props) => {
   };
 
   const registerUser = () => {
-    setLoading(true); // Đặt trạng thái loading để hiển thị ActivityIndicator
-  
-    axios.post('http://localhost:3000/users', user) // Gửi POST request với dữ liệu người dùng
+    setLoading(true);
+
+
+    if (!name || !email || !password || !confirmPassword || !phone) {
+      setLoading(false);
+      alert('Vui lòng điền đầy đủ thông tin.');
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setLoading(false);
+      alert('Email không hợp lệ. Vui lòng kiểm tra lại.');
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      setLoading(false);
+      alert('Mật khẩu phải chứa ít nhất 6 ký tự.');
+      return;
+    }
+
+    if(confirmPassword !== password){
+      setLoading(false);
+      alert('Nhập lại mật khẩu không khớp');
+      return;
+    }
+
+    axios.post(serverURL + '/users', user)
       .then((response) => {
-        setLoading(false); 
-        console.log('Đăng kí thành công'); 
+        setLoading(false);
+        alert('Đăng kí thành công');
+        navigation.navigate('Login');
       })
       .catch((error) => {
-        setLoading(false); 
-        console.error('Lỗi khi đăng kí:', error); 
+        setLoading(false);
+        alert('Lỗi khi đăng ký: ' + error.message);
       });
   };
+
+  
 
   return (
     <View  style={stylesB.container}>
