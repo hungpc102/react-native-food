@@ -4,7 +4,7 @@
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
-    "db": "json-server --watch ./services/db.json -H 192.168.1.5",
+    "db": "json-server --watch ./services/db.json -H 192.168.57.151",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web"
@@ -19,7 +19,6 @@
     "expo": "~49.0.8",
     "expo-status-bar": "~1.6.0",
     "fire": "^0.55.1",
-    "firebase": "^10.3.1",
     "json-server": "^0.17.3",
     "react": "18.2.0",
     "react-dom": "^18.2.0",
@@ -27,6 +26,7 @@
     "react-native-checkbox-group": "^1.0.3",
     "react-native-elements": "^3.4.3",
     "react-native-gesture-handler": "^2.12.1",
+    "react-native-keychain": "^8.1.2",
     "react-native-safe-area-context": "^4.7.2",
     "react-native-vector-icons": "^10.0.0",
     "react-native-web": "~0.19.6"

@@ -3,9 +3,10 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator,
 import stylesB from '../assets/css/stylesB'
 import axios from 'axios';
 import {validateEmail, validatePassword} from '../utils/Validate'
-
-
 import {Props } from '../services/interfaces/navigationTypes';
+import { userApiRegister } from '../connect_API/UserAPI' 
+
+
 
 const RegisterScreen = ({ navigation }: Props) => {
   const [email, setEmail] = useState(''); // Khởi tạo state cho email
@@ -14,19 +15,17 @@ const RegisterScreen = ({ navigation }: Props) => {
   const [phone, setPhone] = useState('')
   const [name, setName] = useState('')
   const [loading, setLoading] = useState(false);
-  
-  const serverURL = 'http:192.168.1.5:3000'
+
 
   const user = {
-    "user_name": name,
-    "user_email": email,
-    "user_password": password,
-    "user_phone": phone
+    "USER_NAME": name,
+    "USER_EMAIL": email,
+    "USER_PASSWORD": password,
+    "USER_PHONE": phone
   };
 
   const registerUser = () => {
     setLoading(true);
-
 
     if (!name || !email || !password || !confirmPassword || !phone) {
       setLoading(false);
@@ -52,16 +51,32 @@ const RegisterScreen = ({ navigation }: Props) => {
       return;
     }
 
-    axios.post(serverURL + '/users', user)
-      .then((response) => {
+    axios.post(userApiRegister, user)
+    .then((response) => {
+
         setLoading(false);
-        alert('Đăng kí thành công');
+        alert('Đăng ký thành công');
         navigation.navigate('Login');
-      })
-      .catch((error) => {
+    })
+    .catch((error) => {
         setLoading(false);
-        alert('Lỗi khi đăng ký: ' + error.message);
-      });
+          if (error.response) {
+            const { status, data } = error.response;
+            if (status === 400) {
+                alert('Lỗi khi đăng ký 400: ' + data.error);
+            } else if (status === 409) {
+                alert(data.error);
+            } else {
+                alert('Lỗi đăng ký : ' + error.message);
+            }
+          } else if (error.message === 'Network Error') {
+            // Xử lý lỗi mạng
+            alert('Không thể kết nối đến máy chủ.');
+          } else {
+            // Lỗi không xác định
+            alert('Lỗi : ' + error.message);
+        }
+    });
   };
 
   

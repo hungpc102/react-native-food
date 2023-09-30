@@ -1,11 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity,Image } from 'react-native';
 import stylesB from '../assets/css/stylesB'
-import { ScreenNavigationProp } from '../services/interfaces/navigationTypes';
+import { Props } from '../services/interfaces/navigationTypes';
 
-type Props = {
-    navigation: ScreenNavigationProp;
-  };
+
 
 const HelpPage = ({navigation}: Props) =>{
     return(

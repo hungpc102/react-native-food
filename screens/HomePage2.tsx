@@ -62,6 +62,14 @@ const HomePage2 = ({ navigation }: Props) => {
     setSelectedCategory(category);
   };
 
+  const handleDetail = () =>{
+    navigation.navigate('HomePage3')
+  }
+
+  const handlSearch = () =>{
+    navigation.navigate('SearchScreen')
+  }
+
   const handleIconPress = (iconName:string) => {
     setIconStates((prevState) => ({
       ...prevState,
@@ -70,18 +78,29 @@ const HomePage2 = ({ navigation }: Props) => {
       invoice: iconName === 'invoice' ? 'document-text' : 'document-text-outline',
       user: iconName === 'user' ? 'user' : 'user-o',
     }));
+
+    if (iconName === 'home') {
+      navigation.navigate('Home');
+    } else if (iconName === 'cart') {
+      navigation.navigate('Cart');
+    } else if (iconName === 'invoice') {
+      navigation.navigate('Invoice');
+    } else if (iconName === 'user') {
+      navigation.navigate('UserScreen');
+    }
+    
   };
   
 
     return(
       <View style={[stylesB.container, {}]}>
         <Text style={styles.textTitle}>Tìm các món ăn yêu thích nhất!</Text>
-        <View style={styles.containerSearch}>
-          <TextInput  style={[, styles.inputSearch]} placeholder="Tìm món ăn" autoCapitalize='none'/>
-          <TouchableOpacity >
-            <Icon style={styles.iconSearch} name="search" size={30}/>
+          <TouchableOpacity onPress={handlSearch}>
+            <View style={stylesB.containerSearch}>
+                <Text  style={ [stylesB.inputSearch, styles.textSearch]}> Tìm món ăn</Text>
+                <Icon style={stylesB.iconSearch} name="search" size={30}/>
+            </View>
           </TouchableOpacity>
-        </View>
         <View style={styles.menus}>
           <ScrollView horizontal={true}  >
             {categoryDatas.map((categoryData) => (
@@ -102,7 +121,7 @@ const HomePage2 = ({ navigation }: Props) => {
             data={categoryDatas.find(item => item.category === selectedCategory)?.items || []}
             keyExtractor={(item) => item.name}
             renderItem={({ item }) => (
-              <TouchableOpacity style={styles.swapItemFood}>
+              <TouchableOpacity style={styles.swapItemFood} onPress={handleDetail}>
                 <Image source={require('../assets/photoInScreens/food.png')} style={{ width: 146, height: 146 }} />
                 <Text style={styles.itemFood} >{item.name}</Text>
               </TouchableOpacity>
@@ -141,29 +160,9 @@ const styles = StyleSheet.create({
     fontWeight:'700',
     textAlign:'center'
   },
-  containerSearch:{
-    marginTop:70,
-    marginBottom:30,
-    width:320,
-    height: 44,
-    flexDirection:'row',
-    borderRadius:18,
-    overflow: 'hidden'
-  },
-  inputSearch:{
-    backgroundColor:'#E6E6E6',
-    paddingLeft:30,
-    fontSize:18,
-    flex:1
-  },
-
-  iconSearch:{
-    position:'absolute',
-    right:0,
-    height:40,
-    width:40,
-    paddingTop:6,
-    paddingRight:12
+  textSearch:{
+    paddingTop:10,
+    color:'#686868'
   },
   menus:{
     width:'100%',

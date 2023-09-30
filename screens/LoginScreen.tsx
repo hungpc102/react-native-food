@@ -3,39 +3,122 @@ import { useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, ActivityIndicator, Alert, KeyboardAvoidingView} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import stylesB from '../assets/css/stylesB'
-import { validateEmail, validatePassword }from '../utils/Validate';
 import {Props } from '../services/interfaces/navigationTypes';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-
+import { userApiLogin, userApiStatusLogin } from '../connect_API/UserAPI' 
+import axios from 'axios';
+import { saveTokensToStorage,getAccessTokenFromStorage, saveLoginStatusToStorage, getLoginStatusToStorage} from '../utils/TokenStorage'
+ 
 
 
 const LoginScreen = ({ navigation }: Props) => {
-  const [email, setEmail] = useState(''); // Khởi tạo state cho email
-  const [password, setPassword] = useState(''); // Khởi tạo state cho password
+  const [email, setEmail] = useState(''); 
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
+  
+  const user = {
+    "USER_EMAIL": email,
+    "USER_PASSWORD": password
+  }
+  
   const [isChecked, setIsChecked] = useState(false);
-
+  
   const checkmarkIcon = <Icon name="check" size={16} color="blue" />;
-
-
-
-    // const nav = useNavigation()
-useEffect(() => {
-  // Kiểm tra trạng thái đăng nhập khi mở ứng dụng
-  const checkLoginStatus = async () => {
-    const isLoggedIn = await AsyncStorage.getItem('isLoggedIn');
-    if (isLoggedIn === 'true') {
-      navigation.navigate('HomePage2');
-    }
+  const toggleCheckbox = () => {
+    setIsChecked(!isChecked);
   };
-  checkLoginStatus();
-}, [navigation]);
 
-const toggleCheckbox = () => {
-  setIsChecked(!isChecked);
-};
+
+  useEffect(() => {
+    const SaveLogin = async () => {
+      try {
+        const loginStatus = await getLoginStatusToStorage();
+  
+        if (loginStatus === 'true') {
+          setLoading(true)
+          const token = await getAccessTokenFromStorage();
+          const response = await axios.get(userApiStatusLogin, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+  
+          // Kiểm tra trạng thái từ phản hồi API
+          if (response.data && response.data.statusLogin.status === 'true') {
+            setLoading(false)
+            navigation.navigate('HomePage2');
+
+          } else {
+            setLoading(false)
+            alert('Phiên đăng nhập hết hạn')
+          }
+        } 
+      } catch (error) {
+        setLoading(false)
+        // Xử lý lỗi ở đây
+        alert('Phiên đăng nhập hết hạn')
+        console.log(error);
+      }
+    };
+  
+    SaveLogin();
+  }, []);
+  
+
+
+  const login = () => {
+    setLoading(true);
+    if (!email || !password) {
+      setLoading(false);
+      alert('Vui lòng điền đầy đủ thông tin.');
+      return;
+    }
+  
+    axios.post(userApiLogin, user)
+      .then(async (response) => {
+
+        const accessToken = response.data.accessToken;
+        const refreshToken = response.data.refreshToken;
+    
+        // Kiểm tra xem có accessToken và refreshToken hay không
+        if (accessToken && refreshToken) {
+          // Lưu accessToken và refreshToken vào Keychain
+          await saveTokensToStorage(accessToken, refreshToken);
+          if(isChecked === true){
+            await saveLoginStatusToStorage('true')
+          }
+          setLoading(false);
+          // Chuyển hướng đến trang HomePage1
+          navigation.navigate('HomePage1');
+        } else {
+          setLoading(false);
+          alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
+        }
+      })
+      .catch(error => {
+        setLoading(false);
+        if (error.response) {
+          const { status, data } = error.response;
+          if (status === 400) {
+            const errorMessage = data.error || 'Dữ liệu không hợp lệ';
+            alert(errorMessage);
+          } else if (status === 401) {
+            const errorMessage = data.error || 'Thông tin đăng nhập chưa chính xác';
+            alert(errorMessage);
+          } else if (status === 404) {
+            const errorMessage = data.error || 'Người dùng chưa đăng kí';
+            alert(errorMessage);
+          } else {
+            alert('Lỗi đăng nhập: ' + error.message);
+          }
+        } else {
+          alert('Lỗi đăng nhập: ' + error.message);
+        }
+      })
+  };
+
+
+
 
   return (
     <View  style={stylesB.container}>
@@ -53,7 +136,7 @@ const toggleCheckbox = () => {
          <ActivityIndicator size="large" color="#0000ff" />
       ) : (
         <>
-          <TouchableOpacity  style={stylesB.containerButton}
+          <TouchableOpacity  style={stylesB.containerButton} onPress={login}
            >
               <Text style={stylesB.actionButtonText}>Đăng nhập</Text>
           
