@@ -40,8 +40,8 @@ const stylesB = StyleSheet.create({
 
       // Tìm kiếm css
       containerSearch:{
-        marginTop:70,
-        marginBottom:30,
+        marginTop:50,
+        marginBottom:20,
         width:320,
         height: 44,
         flexDirection:'row',

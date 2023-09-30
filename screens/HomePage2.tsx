@@ -1,11 +1,8 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity,Image,FlatList, TextInput, ScrollView, LayoutAnimation} from 'react-native';
 import stylesB from '../assets/css/stylesB'
 import {  Props } from '../services/interfaces/navigationTypes';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import IconCheck from 'react-native-vector-icons/Ionicons'
-
-
 
 
 
@@ -50,12 +47,7 @@ const HomePage2 = ({ navigation }: Props) => {
   ];
   const [selectedCategory, setSelectedCategory] = useState<string>('Pizza');
   const [isPressed, setIsPressed] = useState(false);
-  const [iconStates, setIconStates] = useState({
-    home: 'home',
-    cart: 'cart-outline',
-    invoice: 'document-text-outline',
-    user:'user-o'
-  });
+ 
 
   const handleCategoryPress = (category: string): void => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); 
@@ -63,38 +55,17 @@ const HomePage2 = ({ navigation }: Props) => {
   };
 
   const handleDetail = () =>{
-    navigation.navigate('HomePage3')
+    navigation.navigate('FoodDetail')
   }
 
   const handlSearch = () =>{
     navigation.navigate('SearchScreen')
   }
 
-  const handleIconPress = (iconName:string) => {
-    setIconStates((prevState) => ({
-      ...prevState,
-      home: iconName === 'home' ? 'home' : 'home-outline',
-      cart: iconName === 'cart' ? 'cart' : 'cart-outline',
-      invoice: iconName === 'invoice' ? 'document-text' : 'document-text-outline',
-      user: iconName === 'user' ? 'user' : 'user-o',
-    }));
-
-    if (iconName === 'home') {
-      navigation.navigate('Home');
-    } else if (iconName === 'cart') {
-      navigation.navigate('Cart');
-    } else if (iconName === 'invoice') {
-      navigation.navigate('Invoice');
-    } else if (iconName === 'user') {
-      navigation.navigate('UserScreen');
-    }
-    
-  };
-  
 
     return(
       <View style={[stylesB.container, {}]}>
-        <Text style={styles.textTitle}>Tìm các món ăn yêu thích nhất!</Text>
+        <Text style={styles.textTitle}>Tìm các món ăn bạn yêu thích nhất!</Text>
           <TouchableOpacity onPress={handlSearch}>
             <View style={stylesB.containerSearch}>
                 <Text  style={ [stylesB.inputSearch, styles.textSearch]}> Tìm món ăn</Text>
@@ -122,29 +93,12 @@ const HomePage2 = ({ navigation }: Props) => {
             keyExtractor={(item) => item.name}
             renderItem={({ item }) => (
               <TouchableOpacity style={styles.swapItemFood} onPress={handleDetail}>
-                <Image source={require('../assets/photoInScreens/food.png')} style={{ width: 146, height: 146 }} />
+                <Image source={require('../assets/photoInScreens/food.png')} style={{ width: 146, height: 136 }} />
                 <Text style={styles.itemFood} >{item.name}</Text>
               </TouchableOpacity>
             )}
             
           />
-          <View style={styles.buttonBar}>
-            <TouchableOpacity onPress={() => handleIconPress('home')}>
-             <IconCheck style={styles.iconButton} name={iconStates.home} size={50} color="white" />
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={() => handleIconPress('cart')}>
-              <IconCheck style={styles.iconButton} name={iconStates.cart} size={50} color="white" />
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={() => handleIconPress('invoice')}>
-              <IconCheck style={styles.iconButton} name={iconStates.invoice} size={50} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleIconPress('user')}>
-              <Icon style={styles.iconButton} name={iconStates.user} size={50} color="white"/>
-            </TouchableOpacity>
-
-          </View>
             
         </View>
         
@@ -154,8 +108,8 @@ const HomePage2 = ({ navigation }: Props) => {
 const styles = StyleSheet.create({
 
   textTitle:{
-    marginTop: '6%',
-    fontSize:30,
+    marginTop: '16%',
+    fontSize:26,
     width:260,
     fontWeight:'700',
     textAlign:'center'
@@ -174,10 +128,10 @@ const styles = StyleSheet.create({
   category:{
     paddingRight:10,
     paddingLeft:10,
-    fontSize:30,
+    fontSize:24,
     fontWeight:'500',
     height:50,
-    width:120,
+    width:100,
     textAlign:'center'
   },
   selected:{
@@ -186,18 +140,17 @@ const styles = StyleSheet.create({
     borderRadius:5,
     bottom:0,
     position:'absolute',
-    width:120,
+    width:100,
   },
   containerItemFood:{
     backgroundColor:'#E6E6E6',
-    borderRadius:40,
+    borderRadius:30,
     marginLeft:10,
     marginRight:10,
     marginTop:18,
-    marginBottom:18,
   },
   swapItemFood:{
-    height:180,
+    height:170,
     width:170,
     backgroundColor:'#fff',
     margin:12,
@@ -208,22 +161,7 @@ const styles = StyleSheet.create({
     textAlign:'center',
     fontWeight:'500',
     fontSize:18
-    
   },
-  buttonBar:{
-    width:'100%',
-    height:70,
-    backgroundColor:'#F24822',
-    bottom:0,
-    flexDirection:'row',
-    borderTopWidth:1,
-    borderColor:'#F24822',
-  },
-  iconButton:{
-    marginRight:28,
-    marginLeft:28,
-    marginTop:6
-  }
   
 })
 

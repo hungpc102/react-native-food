@@ -13,7 +13,7 @@ const HomePage1 = ({ navigation }: Props) => {
             <Text style={styles.textParagraph}>Các món khác</Text>
             <Text style={styles.textHeading}>Hãy tận hưởng hết mình</Text>
             <TouchableOpacity style={[stylesB.containerButton, {width:250}, {height:76},{paddingTop:5}]}
-            onPress={() => navigation.navigate('HomePage2')}>
+            onPress={() => navigation.navigate('ButtonBar')}>
               <Text style={stylesB.actionButtonText}>Bắt đầu</Text>
             </TouchableOpacity>
         </View>
