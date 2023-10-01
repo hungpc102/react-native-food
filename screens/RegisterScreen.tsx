@@ -85,7 +85,7 @@ const RegisterScreen = ({ navigation }: Props) => {
     <View  style={stylesB.container}>
       <Text style={styles.trademark}>FOODKART</Text>
       <Text style={styles.textTitle}>Những món ăn ngon đang đợi bạn!</Text>
-      <KeyboardAvoidingView behavior='height'>
+      <KeyboardAvoidingView behavior='padding'>
         <TextInput style={stylesB.textInput} placeholder="Họ và tên" value={name}
         onChangeText={(text) => setName(text)}/>
         <TextInput value={email} style={stylesB.textInput} placeholder="Email" autoCapitalize='none' 

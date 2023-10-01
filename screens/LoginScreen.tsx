@@ -4,9 +4,9 @@ import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, ActivityInd
 import Icon from 'react-native-vector-icons/FontAwesome';
 import stylesB from '../assets/css/stylesB'
 import {Props } from '../services/interfaces/navigationTypes';
-import { userApiLogin, userApiStatusLogin } from '../connect_API/UserAPI' 
+import { userApiLogin, userApiStatusLogin, userApiRefreshToken } from '../connect_API/UserAPI' 
 import axios from 'axios';
-import { saveTokensToStorage,getAccessTokenFromStorage, saveLoginStatusToStorage, getLoginStatusToStorage} from '../utils/TokenStorage'
+import { saveTokensToStorage,getAccessTokenFromStorage, saveLoginStatusToStorage, getLoginStatusToStorage, getRefreshTokenFromStorage} from '../utils/TokenStorage'
  
 
 
@@ -31,32 +31,95 @@ const LoginScreen = ({ navigation }: Props) => {
 
   useEffect(() => {
     const SaveLogin = async () => {
+      setLoading(true)
+
       try {
         const loginStatus = await getLoginStatusToStorage();
+        if(!loginStatus){
+          setLoading(false)
+        }
+       
+        console.log(loginStatus)
   
         if (loginStatus === 'true') {
-          setLoading(true)
           const token = await getAccessTokenFromStorage();
-          const response = await axios.get(userApiStatusLogin, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
-  
-          // Kiểm tra trạng thái từ phản hồi API
-          if (response.data && response.data.statusLogin.status === 'true') {
-            setLoading(false)
-            navigation.navigate('HomePage2');
 
-          } else {
+         
+          const refreshToken = await getRefreshTokenFromStorage();
+          // console.log(refreshToken)
+          try{
+             await axios.get(userApiStatusLogin, {
+                headers: {
+                  Authorization: `Bearer ${token}`
+                }
+              })
+              .then((response) => {
+                // Xử lý kết quả trả về từ API
+                const statusLogin = response.data.statusLogin;
+                
+                if (statusLogin && statusLogin.length > 0) {
+                  const status = statusLogin[0].status;
+                  
+                  if (status === 'true') {
+                    // Dữ liệu 'true' đã được lấy thành công
+                    console.log('Dữ liệu "true" đã được lấy thành công');
+                    navigation.navigate('ButtonBar')
+                  } else {
+                    console.log('Dữ liệu không phải là "true"');
+
+                  }
+                } else {
+                  console.log('Không có dữ liệu statusLogin trong JSON')
+                  axios.post(userApiRefreshToken, {
+                    refreshToken: refreshToken
+                    }, {
+                      headers: {
+                          'Content-Type': 'application/json'
+                      }
+                    }
+                  )
+                    .then(response => {
+                      const accessToken = response.data.accessToken;
+                      const refreshToken = response.data.refreshToken;
+                  
+                      console.log('accessToken:', accessToken);
+                      console.log('refreshToken:', refreshToken);
+
+                      if(accessToken && refreshToken){
+                        saveTokensToStorage(accessToken,refreshToken )
+
+                        SaveLogin()
+                      }
+                      setLoading(false)
+
+                    })
+                    .catch(error => {
+                         setLoading(false)
+
+                        console.error('Lỗi khi gọi API:', error);
+                    });
+                    }
+              })
+              .catch((error) => {
+                setLoading(false)
+                // Xử lý lỗi nếu có
+                console.error('Lỗi khi gọi API:', error);
+              });
+
+            }
+
+          catch(error){
             setLoading(false)
-            alert('Phiên đăng nhập hết hạn')
+            console.log('lỗi')
           }
-        } 
-      } catch (error) {
+
+
+        }
+      }
+      catch (error) {
         setLoading(false)
         // Xử lý lỗi ở đây
-        alert('Phiên đăng nhập hết hạn')
+        alert('Phiên đăng nhập lỗi 2')
         console.log(error);
       }
     };
