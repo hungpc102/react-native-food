@@ -28,7 +28,7 @@ const App = () => {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="ButtonBar">
       <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false}}/>
         <Stack.Screen name="Register" component={RegisterScreen} options={commonScreenOptions}/>
         <Stack.Screen name="HomePage1" component={HomePage1} options={commonScreenOptions}/>

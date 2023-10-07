@@ -22,9 +22,9 @@ const ButtonBar = () => {
         tabBarStyle: {
           height: 80, 
           paddingBottom:20,
-          borderTopWidth:1,
-          borderTopColor: '#999',
-          elevation: 10,
+          borderTopWidth:2,
+          borderTopColor: '#EFEFEF',
+          // elevation: 10,
         },
         
       })}

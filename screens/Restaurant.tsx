@@ -24,7 +24,7 @@ const Restaurant = ({ navigation }: Props) => {
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        aspect: [4, 4],
+        aspect: [5, 5],
         quality: 1,
       });
   
@@ -58,9 +58,9 @@ const Restaurant = ({ navigation }: Props) => {
           'Content-Type': 'multipart/form-data', // Important for sending FormData
         },
       });
-  
+      alert('Món ăn đã được tạo')
       // Handle the response from the server
-      console.log(response.data);
+      // console.log(response.data);
     } catch (error) {
       console.log(error);
      
@@ -140,10 +140,10 @@ const styles = StyleSheet.create({
     backgroundColor:'#fff'
   },
   imageFood:{
-    width:200,
-    height:200,
-    borderWidth:1,
-    borderColor:'#999',
+    width:210,
+    height:210,
+    borderWidth:5,
+    borderColor:'#F24822',
     marginTop:'10%',
     marginBottom:20
   },

@@ -7,16 +7,23 @@ import axios from 'axios';
 import { foodApiGetAll } from '../connect_API/FoodAPI';
 
 const HomePage2 = ({ navigation }: Props) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>();
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [categoryDatas, setCategoryDatas] = useState<any[]>([]);
+  const [categories, setCategories] = useState<string[]>([])
+  const [imageData, setImageData] = useState<any[]>([])
 
   useEffect(() => {
     axios.get(foodApiGetAll)
       .then((response) => {
-        const data: any[] = response.data; // Định kiểu dữ liệu của data
-        const categories = [...new Set(data.map((item) => item.CATEGORY))];
+        const data: any = response.data; // Lấy toàn bộ đối tượng dữ liệu
+        const foods: any[] = data.foods; // Lấy danh sách món ăn từ đối tượng dữ liệu
+        const categories = [...new Set(foods.map((item) => item.CATEGORY))];
         setSelectedCategory(categories[0]);
-        setCategoryDatas(data);
+        setCategoryDatas(foods);
+        setCategories(categories)
+        const imageData = foods.map((food) => food.FOOD_PICTURE);
+        setImageData(imageData);
+
       })
       .catch((error) => {
         console.error('Lỗi khi lấy dữ liệu từ API:', error);
@@ -47,18 +54,20 @@ const HomePage2 = ({ navigation }: Props) => {
       </TouchableOpacity>
       <View style={styles.menus}>
       <ScrollView horizontal={true}>
-        {[...new Set(categoryDatas.map((categoryData) => categoryData.CATEGORY))].map((category) => (
-          <TouchableOpacity
-            key={category}
-            onPress={() => handleCategoryPress(category)}
-          >
-            <Text style={styles.category}>{category}</Text>
+          {categories.map((category) => (
+            <TouchableOpacity
+              key={category}
+              onPress={() => handleCategoryPress(category)}
+            >
+
+              <Text style={styles.category}>{category}</Text>
             {selectedCategory === category && (
               <View style={styles.selected}></View>
             )}
-          </TouchableOpacity>
-        ))}
+            </TouchableOpacity>
+          ))}
       </ScrollView>
+
       </View>
       <FlatList
         numColumns={2}
@@ -67,7 +76,9 @@ const HomePage2 = ({ navigation }: Props) => {
         keyExtractor={(item) => item.FOOD_ID.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.swapItemFood} onPress={handleDetail}>
-            <Image source={{ uri: item.FOOD_PICTURE }} style={{ width: 146, height: 136 }} />
+            {item.FOOD_PICTURE ? (
+              <Image source={{ uri: `data:image/jpeg;base64,${item.FOOD_PICTURE}` }} style={styles.image} />
+            ) : null}
             <Text style={styles.itemFood}>{item.FOOD_NAME}</Text>
           </TouchableOpacity>
         )}
@@ -100,7 +111,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '500',
     height: 50,
-    width: 100,
+    width: 130,
     textAlign: 'center'
   },
   selected: {
@@ -109,7 +120,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     bottom: 0,
     position: 'absolute',
-    width: 100,
+    width: 130,
   },
   containerItemFood: {
     backgroundColor: '#E6E6E6',
@@ -117,6 +128,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     marginTop: 18,
+    marginBottom:10
   },
   swapItemFood: {
     height: 170,
@@ -129,8 +141,14 @@ const styles = StyleSheet.create({
   itemFood: {
     textAlign: 'center',
     fontWeight: '500',
-    fontSize: 18
+    fontSize: 18,
   },
+  image:{
+    marginTop:4,
+    width:160,
+    height:136,
+    borderRadius:30
+  }
 })
 
 export default HomePage2;
