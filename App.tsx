@@ -9,7 +9,8 @@ import ManagerScreen from './screens/ManageScreen'
 import FoodDetail from './screens/FoodDetail';
 import SearchScreen from './screens/SearchPage'
 import ButtonBar from './Components/ButtonBar'
-import { View, Text, StyleSheet, TouchableOpacity,Image } from 'react-native';
+import Restaurant from './screens/Restaurant'
+import GetImage from './screens/GetImage';
 
 
 
@@ -36,6 +37,9 @@ const App = () => {
         <Stack.Screen name="FoodDetail" component={FoodDetail} options={commonScreenOptions}/>
         <Stack.Screen name="SearchScreen" component={SearchScreen} options={commonScreenOptions} />
         <Stack.Screen name="ButtonBar" component={ButtonBar} options={{ headerShown: false}} /> 
+        <Stack.Screen name="Restaurant" component={Restaurant} options={commonScreenOptions}/>
+        <Stack.Screen name="GetImage" component={GetImage} options={{ headerShown: false}}/>
+
       </Stack.Navigator>
 
     </NavigationContainer>

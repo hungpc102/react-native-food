@@ -4,10 +4,9 @@ import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, ActivityInd
 import Icon from 'react-native-vector-icons/FontAwesome';
 import stylesB from '../assets/css/stylesB'
 import {Props } from '../services/interfaces/navigationTypes';
-import { userApiLogin, userApiStatusLogin, userApiRefreshToken } from '../connect_API/UserAPI' 
+import { userApiLogin, userApiStatusLogin, userApiRefreshToken, apiProtectedRoute } from '../connect_API/UserAPI' 
 import axios from 'axios';
 import { saveTokensToStorage,getAccessTokenFromStorage, saveLoginStatusToStorage, getLoginStatusToStorage, getRefreshTokenFromStorage} from '../utils/TokenStorage'
- 
 
 
 const LoginScreen = ({ navigation }: Props) => {
@@ -53,7 +52,7 @@ const LoginScreen = ({ navigation }: Props) => {
                   Authorization: `Bearer ${token}`
                 }
               })
-              .then((response) => {
+              .then(async(response) => {
                 // Xử lý kết quả trả về từ API
                 const statusLogin = response.data.statusLogin;
                 
@@ -63,7 +62,23 @@ const LoginScreen = ({ navigation }: Props) => {
                   if (status === 'true') {
                     // Dữ liệu 'true' đã được lấy thành công
                     console.log('Dữ liệu "true" đã được lấy thành công');
-                    navigation.navigate('ButtonBar')
+                    await axios.post(apiProtectedRoute,{},{
+                      headers: {
+                        Authorization: `Bearer ${token}`
+                      }
+                    })
+                    .then(res => {
+                      console.log(res.data)
+                      if(res.data === 'isRestaurant'){
+                        setLoading(false);
+                        navigation.navigate('Restaurant');
+                      }
+                    })
+                    .catch(error => {
+                      setLoading(false)
+                      navigation.navigate('ButtonBar');
+                    })
+                    
                   } else {
                     console.log('Dữ liệu không phải là "true"');
 
@@ -145,16 +160,31 @@ const LoginScreen = ({ navigation }: Props) => {
     
         // Kiểm tra xem có accessToken và refreshToken hay không
         if (accessToken && refreshToken) {
-          // Lưu accessToken và refreshToken vào Keychain
-          await saveTokensToStorage(accessToken, refreshToken);
-          if(isChecked === true){
-            await saveLoginStatusToStorage('true')
-          }
-          setLoading(false);
-          // Chuyển hướng đến trang HomePage1
-          navigation.navigate('HomePage1');
-        } else {
-          setLoading(false);
+            await saveTokensToStorage(accessToken, refreshToken);
+            if(isChecked === true){
+              await saveLoginStatusToStorage('true')
+            }
+            
+            await axios.post(apiProtectedRoute,{}, {
+              headers: {
+                Authorization: 'Bearer ' + accessToken
+              }
+            })
+              .then(response => {
+                
+                  if(response.data === "isRestaurant"){
+                    setLoading(false);
+                    navigation.navigate('Restaurant');
+                    
+                  }    
+                })
+              .catch(error => {
+                setLoading(false)
+                navigation.navigate('HomePage1');
+              })
+
+            } else {
+              setLoading(false);
           alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
         }
       })

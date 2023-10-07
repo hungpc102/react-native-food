@@ -1,20 +1,17 @@
-const userApi = 'http://192.168.1.5:3000/user'
+import {apiBase} from "./API_BASE"
 
-const userApiRegister = userApi + '/register'
+export const userApi = apiBase + '/user'
 
-const userApiLogin = userApi +'/login'
+export const userApiRegister = userApi + '/register'
 
-const userApiRefreshToken = userApi +'/refresh-token'
+export const userApiLogin = userApi +'/login'
 
-const userApiLogout = userApi +'/logout'
+export const userApiRefreshToken = userApi +'/refresh-token'
 
-const userApiStatusLogin = userApi + '/getSaveLogin'
+export const userApiLogout = userApi +'/logout'
+
+export const userApiStatusLogin = userApi + '/getSaveLogin'
+
+export const apiProtectedRoute = userApi + '/protected-route'
 
 
-module.exports = {
-    userApiRegister,
-    userApiLogin,
-    userApiRefreshToken,
-    userApiLogout,
-    userApiStatusLogin
-  }

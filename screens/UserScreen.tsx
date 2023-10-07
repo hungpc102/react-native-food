@@ -49,8 +49,8 @@ const UserScreen = ({ navigation }: Props) => {
             <Text style= {styles.TextInfo}>Số điện thoại : 19001001</Text>
           </View>
           <View style={styles.logout}>
-            <TouchableOpacity onPress={logout} style={[stylesB.containerButton, {marginBottom:0, width:'90%', borderRadius:20}]}>
-            <Text style={stylesB.actionButtonText}>Đăng xuất</Text>
+            <TouchableOpacity onPress={logout} style={[stylesB.containerButton, {marginBottom:0, width:'90%', borderRadius:20, height:54}]}>
+            <Text style={[stylesB.actionButtonText, {fontSize:22}]}>Đăng xuất</Text>
             </TouchableOpacity>
           </View>
           
@@ -101,6 +101,7 @@ const styles = StyleSheet.create({
     position:'absolute',
     width: '100%',
     alignItems:'center',
+    marginBottom:20,
   }
 })
 
