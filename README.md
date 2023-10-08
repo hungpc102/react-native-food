@@ -32,4 +32,4 @@ quản lý đặt hàng của khách hàng, trạng thái đơn hàng, có cho p
 
 
 Công nghệ và công cụ sử dụng
-Dự kiến các công nghệ và ngôn ngữ lập trình sử dụng:  React Native, C#.net, sql server, redux
+Dự kiến các công nghệ và ngôn ngữ lập trình sử dụng:  React Native, Node.js, sql server, redis, redux
