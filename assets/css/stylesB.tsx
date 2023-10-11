@@ -3,20 +3,20 @@ const stylesB = StyleSheet.create({
     textInput:{
         borderBottomWidth:1,
         borderColor:"#E6E6E6",
-        fontSize: 24,
+        fontSize: 22,
         marginBottom:28,
         width:320,
-        fontWeight:'500'
+        fontWeight:'500',
       },
     container:{
         flex:1,
         backgroundColor: '#fff',
         alignItems:"center",
-        // justifyContent:'center',
+        justifyContent:'center',
     },
     containerButton:{
         width:170,
-         height:70,
+         height:60,
          borderRadius:30,
          backgroundColor:"#F24822",
          marginTop:10,
@@ -26,7 +26,7 @@ const stylesB = StyleSheet.create({
        ,
     actionButtonText:{
         flex:1,
-        fontSize:30,
+        fontSize:24,
         textAlign:'center',
         paddingTop:12,
         fontWeight:'600',
@@ -52,7 +52,8 @@ const stylesB = StyleSheet.create({
         backgroundColor:'#E6E6E6',
         paddingLeft:30,
         fontSize:18,
-        flex:1
+        flex:1,
+        paddingRight:50
       },
     
       iconSearch:{

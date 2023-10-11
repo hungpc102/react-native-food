@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, TouchableOpacity,Image } from 'react-native';
 import stylesB from '../assets/css/stylesB'
 import { Props } from '../services/interfaces/navigationTypes';
 
-
 const HomePage1 = ({ navigation }: Props) => {
     return(
         <View style={stylesB.container}>
@@ -12,7 +11,7 @@ const HomePage1 = ({ navigation }: Props) => {
             </View>
             <Text style={styles.textParagraph}>Các món khác</Text>
             <Text style={styles.textHeading}>Hãy tận hưởng hết mình</Text>
-            <TouchableOpacity style={[stylesB.containerButton, {width:250}, {height:76},{paddingTop:5}]}
+            <TouchableOpacity style={[stylesB.containerButton, {width:250}, {height:60},{paddingTop:3}]}
             onPress={() => navigation.navigate('ButtonBar')}>
               <Text style={stylesB.actionButtonText}>Bắt đầu</Text>
             </TouchableOpacity>

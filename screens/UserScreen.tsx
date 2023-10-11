@@ -1,37 +1,27 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import React, {useState, useRef} from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, Pressable, TextInput, TouchableWithoutFeedback} from 'react-native';
 import stylesB from '../assets/css/stylesB'
 import { Props } from '../services/interfaces/navigationTypes';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import axios from 'axios';
-import {userApiLogout} from '../connect_API/UserAPI'
-import {getRefreshTokenFromStorage, saveLoginStatusToStorage} from '../utils/TokenStorage'
+import {logoutUser} from '../services/logoutServices'
 
 const UserScreen = ({ navigation }: Props) => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [password, setPassword] = useState(''); 
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const modalRef = useRef(null);
 
-  const logout = async () => {
-    try {
-      const refreshToken = await getRefreshTokenFromStorage();
-
-      if (refreshToken) {
-        await saveLoginStatusToStorage('')
-        // Gọi API logout và truyền refreshToken
-        const response = await axios.delete(userApiLogout, {
-          data: {
-            refreshToken: refreshToken, // refreshToken nằm trong phần body của yêu cầu
-          },
-        });
-
-        // Xử lý phản hồi từ API logout nếu cần
-        if (response.status === 200) {
-          navigation.navigate('Login');
-        }
-      }
-    } catch (error) {
-      console.error('Lỗi khi gọi API logout:', error);
-      // Xử lý lỗi nếu cần
-    }
+  const handleLogout = () => {
+    logoutUser(navigation)
   }
+
+  const handleModalPress = (e: any) => {
+    if (modalRef.current && modalRef.current !== e.target) {
+      return;
+    }
+    setModalVisible(false)
+  };
+  
     return(
         <View style={styles.container}>
 
@@ -41,21 +31,63 @@ const UserScreen = ({ navigation }: Props) => {
               <Text style={styles.textName}>Hung12</Text>
             </View>
           </View>
-
+            <Text style= {styles.TextTitle}>Thông tin tài khoản</Text>
           <View style= {styles.info}>
-            <Text style= {styles.TextTitle}>Thông tin cá nhân </Text>
-            <Text style= {styles.TextInfo}>Họ và tên : Chu Đức Hùng</Text>
-            <Text style= {styles.TextInfo}>Email: Hungdz@gmail.com</Text>
-            <Text style= {styles.TextInfo}>Số điện thoại : 19001001</Text>
+            <View style= {styles.swapRowInfo}>
+              <Text style= {styles.TextTitleInfo}>Họ và tên</Text>
+              <Text style= {styles.TextInfo}>Chu Đức Hùng</Text>
+            </View>
+
+            <View style= {styles.swapRowInfo}>
+              <Text style= {styles.TextTitleInfo}>Email</Text>
+              <Text style= {styles.TextInfo}>Hungdz@gmail.com</Text>
+            </View>
+            
+            <View style= {styles.swapRowInfo}>
+              <Text style= {styles.TextTitleInfo}>Số điện thoại</Text>
+              <Text style= {styles.TextInfo}>19001001</Text>
+            </View>
+          </View>
+            <Text style= {styles.TextTitle}>Bảo mật</Text>
+          <View style= {styles.info}>
+            <Pressable onPress={() => setModalVisible(true)}>
+              <View style= {styles.swapRowInfo}>
+              <Text style= {styles.TextTitleInfo}>Đổi mật khẩu</Text>
+              <Text style= {styles.iconText}> {'>'} </Text>
+             </View>
+            </Pressable>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        >
+          <View style={styles.overlay}>
+          <TouchableWithoutFeedback onPress={handleModalPress}>
+              <View style={styles.centeredView} ref={modalRef}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Lưu ý: không cung cấp mật khẩu cho bất cứ ai vì bất cứ lý do nào</Text>
+            <TextInput value={password} style={stylesB.textInput} placeholderTextColor='#888' placeholder="Mật khẩu" secureTextEntry={true}
+                onChangeText={(text) => setPassword(text)} />
+            <TextInput value={confirmPassword} style={stylesB.textInput} placeholderTextColor='#888' placeholder="Nhập lại mật khẩu" secureTextEntry={true} 
+                onChangeText={(text) => setConfirmPassword(text)}/>
+            <TouchableOpacity style={[stylesB.containerButton, {height:50}]}>
+              <Text style={[stylesB.actionButtonText, {fontSize:18}]}>Thay đổi mật khẩu</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+          </View>
+        
+      </Modal>
+      
+
           </View>
           <View style={styles.logout}>
-            <TouchableOpacity onPress={logout} style={[stylesB.containerButton, {marginBottom:0, width:'90%', borderRadius:20, height:54}]}>
+            <TouchableOpacity onPress={handleLogout} style={[stylesB.containerButton, {marginBottom:0, width:'90%', borderRadius:20, height:54}]}>
             <Text style={[stylesB.actionButtonText, {fontSize:22}]}>Đăng xuất</Text>
             </TouchableOpacity>
           </View>
-          
-
-            
+ 
         </View>
     )
 }
@@ -69,6 +101,7 @@ const styles = StyleSheet.create({
     backgroundColor:'#F24822',
     height:170,
     width:'100%',
+    marginBottom:20
   },
   NameUser:{
     flexDirection:'row',
@@ -83,18 +116,78 @@ const styles = StyleSheet.create({
     marginLeft:30,
     marginTop:10
   },
-  info:{
-    marginLeft:20
-  },
   TextTitle:{
-    marginTop:50,
+    marginLeft:20,
     marginBottom:20,
-    fontSize:30
-
+    fontSize:22,
+    fontWeight:'600'
+  },
+  info:{
+    height:'auto',
+    width:'95%',
+    paddingLeft:20,
+    paddingRight:20,
+    backgroundColor: '#fff',
+    marginBottom:30,
+    marginRight:10,
+    marginLeft:10,
+    paddingTop:20
+  },
+  swapRowInfo:{
+    flexDirection:'row'
+  },
+  TextTitleInfo:{
+    marginBottom:20,
+    fontSize:20,
+    fontWeight:'500'
   },
   TextInfo:{
-    marginTop:10,
-    fontSize:20
+    color:'#333',
+    fontSize:18,
+    right:0,
+    position:'absolute',
+    paddingTop:2
+  },
+  iconText:{
+    color:'#666',
+    fontSize:28,
+    right:0,
+    position:'absolute',
+    marginTop:-8
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    width:390,
+    height:320,
+    margin: 20,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 28,
+    textAlign: 'center',
+    fontSize: 18
+  },
+  overlay:{
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)', // Màu nền tối
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   logout:{
     bottom:0,

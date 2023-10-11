@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, TextInput, ScrollView, LayoutAnimation } from 'react-native';
+import React, { useState, useEffect} from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, ScrollView, LayoutAnimation } from 'react-native';
 import stylesB from '../assets/css/stylesB'
 import { Props } from '../services/interfaces/navigationTypes';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import axios from 'axios';
-import { foodApiGetAll } from '../connect_API/FoodAPI';
+import {getAllFoods} from '../services/getAllFood'
 
 const HomePage2 = ({ navigation }: Props) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('');
@@ -13,9 +12,8 @@ const HomePage2 = ({ navigation }: Props) => {
   const [imageData, setImageData] = useState<any[]>([])
 
   useEffect(() => {
-    axios.get(foodApiGetAll)
-      .then((response) => {
-        const data: any = response.data; // Lấy toàn bộ đối tượng dữ liệu
+    getAllFoods()
+      .then((data) => {
         const foods: any[] = data.foods; // Lấy danh sách món ăn từ đối tượng dữ liệu
         const categories = [...new Set(foods.map((item) => item.CATEGORY))];
         setSelectedCategory(categories[0]);
@@ -35,12 +33,13 @@ const HomePage2 = ({ navigation }: Props) => {
     setSelectedCategory(category);
   };
 
-  const handleDetail = () => {
-    navigation.navigate('FoodDetail');
+  const handleDetail = (foodId:number) => {
+    navigation.navigate('FoodDetail', { foodId })
   }
 
   const handleSearch = () => {
     navigation.navigate('SearchScreen');
+    
   }
 
   return (
@@ -75,7 +74,7 @@ const HomePage2 = ({ navigation }: Props) => {
         data={categoryDatas.filter((item) => item.CATEGORY === selectedCategory)}
         keyExtractor={(item) => item.FOOD_ID.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.swapItemFood} onPress={handleDetail}>
+          <TouchableOpacity style={styles.swapItemFood} onPress={() => handleDetail(item.FOOD_ID)}>
             {item.FOOD_PICTURE ? (
               <Image source={{ uri: `data:image/jpeg;base64,${item.FOOD_PICTURE}` }} style={styles.image} />
             ) : null}
@@ -111,7 +110,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '500',
     height: 50,
-    width: 130,
+    width: 136,
     textAlign: 'center'
   },
   selected: {
@@ -120,7 +119,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     bottom: 0,
     position: 'absolute',
-    width: 130,
+    width: 136,
   },
   containerItemFood: {
     backgroundColor: '#E6E6E6',

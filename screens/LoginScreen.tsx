@@ -1,19 +1,16 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, ActivityIndicator, Alert, KeyboardAvoidingView} from 'react-native';
+import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, ActivityIndicator, KeyboardAvoidingView} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import stylesB from '../assets/css/stylesB'
 import {Props } from '../services/interfaces/navigationTypes';
-import { userApiLogin, userApiStatusLogin, userApiRefreshToken, apiProtectedRoute } from '../connect_API/UserAPI' 
-import axios from 'axios';
-import { saveTokensToStorage,getAccessTokenFromStorage, saveLoginStatusToStorage, getLoginStatusToStorage, getRefreshTokenFromStorage} from '../utils/TokenStorage'
-
+import {login} from '../services/loginFunctions'
+import { saveLogin } from '../services/saveLoginService'
 
 const LoginScreen = ({ navigation }: Props) => {
   const [email, setEmail] = useState(''); 
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-
   
   const user = {
     "USER_EMAIL": email,
@@ -21,222 +18,43 @@ const LoginScreen = ({ navigation }: Props) => {
   }
   
   const [isChecked, setIsChecked] = useState(false);
-  
   const checkmarkIcon = <Icon name="check" size={16} color="blue" />;
   const toggleCheckbox = () => {
     setIsChecked(!isChecked);
   };
 
-
   useEffect(() => {
-    const SaveLogin = async () => {
-      setLoading(true)
-
-      try {
-        const loginStatus = await getLoginStatusToStorage();
-        if(!loginStatus){
-          setLoading(false)
-        }
-       
-        console.log(loginStatus)
-  
-        if (loginStatus === 'true') {
-          const token = await getAccessTokenFromStorage();
-
-         
-          const refreshToken = await getRefreshTokenFromStorage();
-          // console.log(refreshToken)
-          try{
-             await axios.get(userApiStatusLogin, {
-                headers: {
-                  Authorization: `Bearer ${token}`
-                }
-              })
-              .then(async(response) => {
-                // Xử lý kết quả trả về từ API
-                const statusLogin = response.data.statusLogin;
-                
-                if (statusLogin && statusLogin.length > 0) {
-                  const status = statusLogin[0].status;
-                  
-                  if (status === 'true') {
-                    // Dữ liệu 'true' đã được lấy thành công
-                    console.log('Dữ liệu "true" đã được lấy thành công');
-                    await axios.post(apiProtectedRoute,{},{
-                      headers: {
-                        Authorization: `Bearer ${token}`
-                      }
-                    })
-                    .then(res => {
-                      console.log(res.data)
-                      if(res.data === 'isRestaurant'){
-                        setLoading(false);
-                        navigation.navigate('Restaurant');
-                      }
-                    })
-                    .catch(error => {
-                      setLoading(false)
-                      navigation.navigate('ButtonBar');
-                    })
-                    
-                  } else {
-                    console.log('Dữ liệu không phải là "true"');
-
-                  }
-                } else {
-                  console.log('Không có dữ liệu statusLogin trong JSON')
-                  axios.post(userApiRefreshToken, {
-                    refreshToken: refreshToken
-                    }, {
-                      headers: {
-                          'Content-Type': 'application/json'
-                      }
-                    }
-                  )
-                    .then(response => {
-                      const accessToken = response.data.accessToken;
-                      const refreshToken = response.data.refreshToken;
-                  
-                      console.log('accessToken:', accessToken);
-                      console.log('refreshToken:', refreshToken);
-
-                      if(accessToken && refreshToken){
-                        saveTokensToStorage(accessToken,refreshToken )
-
-                        SaveLogin()
-                      }
-                      setLoading(false)
-
-                    })
-                    .catch(error => {
-                         setLoading(false)
-
-                        console.error('Lỗi khi gọi API:', error);
-                    });
-                    }
-              })
-              .catch((error) => {
-                setLoading(false)
-                // Xử lý lỗi nếu có
-                console.error('Lỗi khi gọi API:', error);
-              });
-
-            }
-
-          catch(error){
-            setLoading(false)
-            console.log('lỗi')
-          }
-
-
-        }
-      }
-      catch (error) {
-        setLoading(false)
-        // Xử lý lỗi ở đây
-        alert('Phiên đăng nhập lỗi 2')
-        console.log(error);
-      }
-    };
-  
-    SaveLogin();
+    saveLogin(setLoading, navigation);
   }, []);
-  
 
-
-  const login = () => {
-    setLoading(true);
-    if (!email || !password) {
-      setLoading(false);
-      alert('Vui lòng điền đầy đủ thông tin.');
-      return;
-    }
-  
-    axios.post(userApiLogin, user)
-      .then(async (response) => {
-
-        const accessToken = response.data.accessToken;
-        const refreshToken = response.data.refreshToken;
-    
-        // Kiểm tra xem có accessToken và refreshToken hay không
-        if (accessToken && refreshToken) {
-            await saveTokensToStorage(accessToken, refreshToken);
-            if(isChecked === true){
-              await saveLoginStatusToStorage('true')
-            }
-            
-            await axios.post(apiProtectedRoute,{}, {
-              headers: {
-                Authorization: 'Bearer ' + accessToken
-              }
-            })
-              .then(response => {
-                
-                  if(response.data === "isRestaurant"){
-                    setLoading(false);
-                    navigation.navigate('Restaurant');
-                    
-                  }    
-                })
-              .catch(error => {
-                setLoading(false)
-                navigation.navigate('HomePage1');
-              })
-
-            } else {
-              setLoading(false);
-          alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
-        }
-      })
-      .catch(error => {
-        setLoading(false);
-        if (error.response) {
-          const { status, data } = error.response;
-          if (status === 400) {
-            const errorMessage = data.error || 'Dữ liệu không hợp lệ';
-            alert(errorMessage);
-          } else if (status === 401) {
-            const errorMessage = data.error || 'Thông tin đăng nhập chưa chính xác';
-            alert(errorMessage);
-          } else if (status === 404) {
-            const errorMessage = data.error || 'Người dùng chưa đăng kí';
-            alert(errorMessage);
-          } else {
-            alert('Lỗi đăng nhập: ' + error.message);
-          }
-        } else {
-          alert('Lỗi đăng nhập: ' + error.message);
-        }
-      })
+  const handleLogin = async () => {
+    login(email, password, isChecked, setLoading, navigation, user);
   };
 
-
-
-
   return (
-    <View  style={stylesB.container}>
+    <KeyboardAvoidingView behavior='height' style={stylesB.container}>
       <View style={styles.containerLogo}>
         <Image style={styles.logo} source={require('../assets/photoInScreens/FoodKart-login.jpg')} />
       </View>
-      <KeyboardAvoidingView behavior='height' style={styles.wrapper}>
         <TextInput value={email} style={stylesB.textInput} placeholder="Tài khoản" autoCapitalize='none' 
         onChangeText={(text) => setEmail(text)} />
         <TextInput value={password} style={stylesB.textInput} placeholder="Mật khẩu"  autoCapitalize='none' secureTextEntry={true}
         onChangeText={(text) => setPassword(text)} // Cập nhật state của mật khẩu
          />
-      </KeyboardAvoidingView>
+  
       {loading ?(
          <ActivityIndicator size="large" color="#0000ff" />
       ) : (
         <>
-          <TouchableOpacity  style={stylesB.containerButton} onPress={login}
+          <TouchableOpacity  style={stylesB.containerButton} onPress={handleLogin}
            >
               <Text style={stylesB.actionButtonText}>Đăng nhập</Text>
           
           </TouchableOpacity>
         </> 
       )}
-      <TouchableOpacity onPress={toggleCheckbox} style={styles.checkboxContainer}>
+      <View style={{flexDirection:'row', marginTop:20}}>
+         <TouchableOpacity onPress={toggleCheckbox} style={styles.checkboxContainer}>
       <View
         style={[
           styles.checkbox,
@@ -247,8 +65,11 @@ const LoginScreen = ({ navigation }: Props) => {
       <Text >{checkmarkIcon}</Text>
       )}
       </View>
-      <Text style={styles.label}>Ghi nhớ đăng nhập?</Text>
       </TouchableOpacity>
+      <Text style={styles.label}>Ghi nhớ đăng nhập?</Text>
+      </View>
+     
+      
       <View style={{flexDirection:'row'}} >
         <Text style={styles.label}>Chưa đăng kí? Đăng kí tại </Text>
         <TouchableOpacity  onPress={() => navigation.navigate('Register')}>
@@ -258,16 +79,15 @@ const LoginScreen = ({ navigation }: Props) => {
       <TouchableOpacity onPress={() => navigation.navigate('HelpPage')}>
         <Text style={[styles.textHelp,stylesB.textDirectional]} >Cần trợ giúp</Text>
       </TouchableOpacity>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
 
     containerLogo:{
-      marginTop:'15%',
-      marginBottom:60,
-      
+      marginTop:'-10%',
+      marginBottom:-50,
     },
     logo:{
       width:468,

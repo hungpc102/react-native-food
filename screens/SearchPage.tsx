@@ -1,76 +1,63 @@
-import React from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity,Image,TextInput,FlatList } from 'react-native';
 import stylesB from '../assets/css/stylesB'
 import { Props } from '../services/interfaces/navigationTypes';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
-
+import {searchFood} from '../services/searchFood'
 
 const SearchScreen = ({ navigation }: Props) => {
-    const categoryDatas = [
-        {
-          "category": "Pizza",
-          "items": [
-            {"name":"Pizza Margherita", "imageURL":"../assets/photoInScreens/food.png"},
-            {"name":"Pizza hải sản" , "imageURL":"../assets/photoInScreens/food.png"},
-            {"name":"Pizza thập cẩm", "imageURL":"../assets/photoInScreens/food.png"},
-            {"name":"Pizza nấm", "imageURL":"../assets/photoInScreens/food.png"},
-            {"name":"Pizza cay", "imageURL":"../assets/photoInScreens/food.png"},
-            {"name":"Pizza bò", "imageURL":"../assets/photoInScreens/food.png"},
-            {"name":"Pizza gà", "imageURL":"../assets/photoInScreens/food.png"},
-            {"name":"Pizza rau", "imageURL":"../assets/photoInScreens/food.png"},
-          ]
-        },
-        {
-          "category": "Burger",
-          "items": [{"name":"Burger gà", "imageURL":"../assets/photoInScreens/food.png"},
-           {"name":"Burger bò", "imageURL":"../assets/photoInScreens/food.png"},
-            {"name":"Burger rau", "imageURL":"../assets/photoInScreens/food.png"},],
-        },
-        {
-          "category": "Hotdog",
-          "items": [{"name":"Hotdog truyền thống", "imageURL":"../assets/photoInScreens/food.png"},
-           {"name":"Hotdog gà", "imageURL":"../assets/photoInScreens/food.png"},],
-        },
-        {
-          "category": "Tea",
-          "items": [{"name":"Trà đào", "imageURL":"../assets/photoInScreens/food.png"},
-           {"name":"Trà chanh", "imageURL":"../assets/photoInScreens/food.png"},
-            {"name":"Trà xanh", "imageURL":"../assets/photoInScreens/food.png"},]
-        },
-        {
-          "category": "juice",
-          "items": [{"name":"Nước cam", "imageURL":"../assets/photoInScreens/food.png"},
-           {"name":"Nước dứa", "imageURL":"../assets/photoInScreens/food.png"},
-          {"name":"Nước táo", "imageURL":"../assets/photoInScreens/food.png"},],
-        },
-      ];
-      const allFoodItemNames = categoryDatas.flatMap(category => category.items.map(item => item.name));
 
       const Separator = () => <View style={styles.separator} />;
+      const [categoryDatas, setCategoryDatas] = useState<any[]>([])
+      const [imageData, setImageData] = useState<any[]>([])
+      const [searchText, setSearchText] = useState('')
+      const inputRef = useRef<TextInput>(null);
+
+      useEffect(() => {
+       
+        searchFood(searchText)
+          .then((data) => {
+            const foods: any[] = data.foods;
+            setCategoryDatas(foods);
+            const images = foods.map((food) => food.FOOD_PICTURE);
+            setImageData(images);
+          })
+          .catch((error) => {
+            console.error('Lỗi khi lấy dữ liệu từ API:', error);
+          });
+
+      }, [searchText ]);
+        
+      const handleDetail = (foodId:number) => {
+        navigation.navigate('FoodDetail', { foodId })
+      }
 
     return(
         <View style={styles.container}>
             <View style={styles.swapSearch}>
                 <View style={stylesB.containerSearch}>
-                    <TextInput  style={ stylesB.inputSearch} placeholder="Tìm món ăn" autoCapitalize='none'/>
-                    <TouchableOpacity >
+                    <TextInput  style={ stylesB.inputSearch}   autoFocus={true} ref={inputRef}
+                    onChangeText={(text) => setSearchText(text)}
+                     placeholder="Tìm món ăn" autoCapitalize='none'/>
+                    <TouchableOpacity onPress={() => inputRef.current?.blur()} >
                         <Icon style={stylesB.iconSearch} name="search" size={30}/>
                     </TouchableOpacity>
                 </View>
             </View>
-
-            <FlatList
-                data={allFoodItemNames}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => (
-                <TouchableOpacity style={styles.item}>
-                    <Image source={require('../assets/photoInScreens/food.png')} style={{ width: 90, height: 90 }} />
-                    <Text  style={styles.textName}>{item}</Text>
-                </TouchableOpacity>
-                )}
-                ItemSeparatorComponent={Separator}
-            />
+            <View style={styles.listFood}>
+                  <FlatList
+                    data={categoryDatas}
+                    keyExtractor={(item) => item.FOOD_ID.toString()} 
+                    renderItem={({ item }) => (
+                        <TouchableOpacity style={styles.item} onPress={() => handleDetail(item.FOOD_ID)}>
+                        <Image source={{ uri: `data:image/jpeg;base64,${item.FOOD_PICTURE}` }} style={styles.image} />
+                        <Text style={styles.textName}>{item.FOOD_NAME}</Text>
+                        </TouchableOpacity>
+                    )}
+                    ItemSeparatorComponent={Separator}
+                  />
+            </View>
+          
         </View>
     );
 };
@@ -78,25 +65,39 @@ const SearchScreen = ({ navigation }: Props) => {
 const styles = StyleSheet.create({
     container:{
         marginLeft:30,
-        marginRight:30
+        marginRight:30,
+        flex:1,
+        height: 3000
     },
     swapSearch:{
         width:'100%',
         alignItems:'center'
     },
+    listFood:{
+        paddingBottom:140
+    },
     item:{
         width: '100%', 
         flexDirection:'row',
         alignItems: 'center',
-        margin:5
+        margin:5,
+    },
+    image:{
+        width: 80,
+        height: 80,
+        borderRadius:20,
+        margin: 6,
+        marginRight:14,
+        borderColor:'#CCCCCC',
+        borderWidth:1
     },
     textName:{
-        fontSize: 24,
+        fontSize: 22,
         fontWeight:'500'
     },
     separator: {
         height: 1,
-        backgroundColor: 'gray', // Màu của dòng kẻ ngang
+        backgroundColor: 'gray', 
       },
 })
 
