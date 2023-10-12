@@ -14,4 +14,11 @@ export const userApiStatusLogin = userApi + '/getSaveLogin'
 
 export const apiProtectedRoute = userApi + '/protected-route'
 
+export const apiGetUser = userApi + '/getById/'
+
+export const apiUpdatePassword = userApi + '/updatePassword/'
+
+
+
+
 

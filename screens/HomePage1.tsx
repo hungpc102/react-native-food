@@ -4,6 +4,8 @@ import stylesB from '../assets/css/stylesB'
 import { Props } from '../services/interfaces/navigationTypes';
 
 const HomePage1 = ({ navigation }: Props) => {
+
+  
     return(
         <View style={stylesB.container}>
             <View style={styles.containerImage}>

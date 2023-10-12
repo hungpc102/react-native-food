@@ -68,3 +68,29 @@ export const getLoginStatusToStorage = async () => {
     return null;
   }
 };
+
+export const saveUserIdToStorage = async (userId) => {
+  try {
+    await SecureStore.setItemAsync('userId', userId);
+    console.log('id user đã được lưu trữ thành công.');
+  } catch (error) {
+    console.error('Lỗi khi lưu trữ id user:', error);
+  }
+}
+
+export const getUserIdToStorage = async () => {
+  try {
+    const userId = await SecureStore.getItemAsync('userId');
+    if (userId !== null) {
+      return userId;
+    } else {
+      console.log('Không tìm thấy used id trong SecureStore.');
+      return null;
+    }
+  } catch (error) {
+    console.error('Lỗi khi lấy user id từ SecureStore:', error);
+    return null;
+  }
+};
+
+

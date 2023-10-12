@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { saveTokensToStorage, saveLoginStatusToStorage } from '../utils/TokenStorage';
+import { saveTokensToStorage, saveLoginStatusToStorage , saveUserIdToStorage, getUserIdToStorage} from '../utils/TokenStorage';
 import { userApiLogin, apiProtectedRoute } from '../api/UserAPI';
 
 export async function routeLogin(accessToken:any,  navigation:any, redirectTo:string) {
@@ -9,15 +9,22 @@ export async function routeLogin(accessToken:any,  navigation:any, redirectTo:st
         Authorization: 'Bearer ' + accessToken,
       },
     });
-
-    if (protectedResponse.data === 'isRestaurant') {
+    const userId =protectedResponse.data.userId
+    if (protectedResponse.data.role === 'restaurant') {
+      const userIdString = JSON.stringify(userId)
+      await saveUserIdToStorage(userIdString)
       navigation.navigate('Restaurant');
-    } else {
-      console.log('không phải tài khoản nhà hàng');
     }
-  } catch {
-    navigation.navigate(redirectTo);
+    if(protectedResponse.data.role === 'user') {
+      const userIdString = JSON.stringify(userId)
+      await saveUserIdToStorage(userIdString)
+      navigation.navigate(redirectTo);
+    }
+  } catch(error:any) {
+    
+    console.log(error.message);
   }
+
 }
 
 function handleLoginError(error:any) {
@@ -40,6 +47,8 @@ function handleLoginError(error:any) {
     alert('Lỗi đăng nhập: ' + error.message);
   }
 }
+
+
 
 export const login = async (
   email: string,
@@ -71,6 +80,7 @@ export const login = async (
       }
       const redirectTo = 'HomePage1'
       await routeLogin(accessToken, navigation, redirectTo);
+
     } else {
       alert('Có lỗi xảy ra. Vui lòng thử lại');
     }

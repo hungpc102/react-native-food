@@ -10,6 +10,9 @@ export const foodApiCreate = foodAPI + '/create-food'
 
 export const apiFoodById = foodAPI + '/getById/'
 
+export const apiDeleteFood = foodAPI + '/delete-food/'
+
+
 
 
 

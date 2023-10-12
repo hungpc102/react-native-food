@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 import { userApiLogout } from '../api/UserAPI';
-import { getRefreshTokenFromStorage, saveLoginStatusToStorage } from '../utils/TokenStorage';
+import { getRefreshTokenFromStorage, saveLoginStatusToStorage, saveUserIdToStorage } from '../utils/TokenStorage';
 
 export const logoutUser = async (navigation:any) => {
   try {
@@ -9,6 +9,7 @@ export const logoutUser = async (navigation:any) => {
 
     if (refreshToken) {
       await saveLoginStatusToStorage('');
+      await saveUserIdToStorage('')
 
       const response = await axios.delete(userApiLogout, {
         data: {

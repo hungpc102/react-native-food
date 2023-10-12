@@ -1,168 +1,203 @@
-import React, { useState } from 'react';
-import { View, Image, Text, TextInput, StyleSheet } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
+import React, { useState , useRef} from 'react';
+import { View, Image, Text, TextInput, StyleSheet, TouchableOpacity, Modal,TouchableWithoutFeedback} from 'react-native';
 import { Props } from '../services/interfaces/navigationTypes';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import stylesB from '../assets/css/stylesB';
-import {createFood} from '../services/createFoodServices'
+import Icon from 'react-native-vector-icons/Fontisto';
+import Icon2 from 'react-native-vector-icons/FontAwesome';
+import Icon3 from 'react-native-vector-icons/AntDesign';
+import Icon4 from 'react-native-vector-icons/FontAwesome5';
+import axios from 'axios';
+import {apiDeleteFood} from '../api/FoodAPI'
+import { getAccessTokenFromStorage} from '../utils/TokenStorage';
+import {handleTokenRefresh} from '../services/jwtServices'
 
 const Restaurant = ({ navigation }: Props) => {
-  const [selectedImage, setSelectedImage] = useState('');
-  const [foodName, setFoodName] = useState('');
-  const [foodInfo, setFoodInfo] = useState('');
-  const [foodPrice, setFoodPrice] = useState('');
-  const [foodQuantity, setFoodQuantity] = useState('');
-  const [foodCategory, setFoodCategory] = useState('');
+ const moveToAddFood = ()=> {
+  navigation.navigate('AddFoodScreen')
+ }
 
-  async function pickImage() {
-    try {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [5, 5],
-        quality: 1,
-      });
-  
-      if (!result.canceled) {
-        setSelectedImage(result.assets[0].uri);
-      }
-    } catch (error) {
-      console.error(error);
-    }
+ const moveToSearch = ()=> {
+  navigation.navigate('SearchScreen')
+ }
+
+ const moveToUser = ()=> {
+  navigation.navigate('UserScreen')
+ }
+
+ const [foodId, setFoodId] =useState('')
+ const [modalVisible, setModalVisible] = useState(false);
+ const modalRef = useRef(null);
+
+ const handleModalPress = (e: any) => {
+  if (modalRef.current && modalRef.current !== e.target) {
+    return;
   }
-
-const handleCreateFood = () => {
-  createFood(selectedImage, foodName, foodInfo, foodPrice, foodQuantity, foodCategory)
+  setModalVisible(false)
 }
 
-  // const createFood = async () => {
-  //   try {
-  //     const imageUri = selectedImage;
-  //     const imageBase64 = await FileSystem.readAsStringAsync(imageUri, { encoding: FileSystem.EncodingType.Base64 });
-      
-  //     const formData = new FormData();
-      
-  //     formData.append('FOOD_PICTURE', imageBase64); 
-  //     formData.append('FOOD_NAME', foodName);
-  //     formData.append('FOOD_INFO', foodInfo);
-  //     formData.append('FOOD_PRICE', foodPrice);
-  //     formData.append('FOOD_QUANTITY', foodQuantity);
-  //     formData.append('CATEGORY', foodCategory);
 
-  //     const response = await axios.post(foodApiCreate, formData, {
-  //       headers: {
-  //         Accept:'application/json',
-  //         'Content-Type': 'multipart/form-data', 
-  //       },
-  //     });
-  //     alert('Món ăn đã được tạo')
-  //   } catch (error) {
-  //     console.log(error);
-     
-  //   }
-  // }
+let callCount = 0
+ const deleteFood = async () => {
+  if(callCount < 2){
+    callCount++;
+    const accessToken = await getAccessTokenFromStorage()
+    try {
+      const response = await axios.delete(apiDeleteFood + foodId, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+  
+      if (response.status === 204) {
+        console.log('Món ăn đã được xoá thành công.');
+        callCount = 0
+        alert('Món ăn đã được xoá thành công')
+  
+      } else {
+        await handleTokenRefresh()
+        deleteFood()
+      }
+    } catch (error) {
+      console.error('Lỗi khi xoá món ăn:', error);
+    }
+    finally{
+      setModalVisible(false)
+    };
+  }else{
+    alert('Lỗi khi xoá món ăn. Vui lòng đăng nhập lại')
+  }
+  
+};
 
   return (
-    
-    <View style={styles.container}>
-      <View >
-        {selectedImage && (
-          <Image style={styles.imageFood}
-            source={{ uri: selectedImage }}
-            
-          />
-        )}
-      </View>
-      
-          <TouchableOpacity style={[stylesB.containerButton,styles.containerButton ]} onPress={pickImage} >
-            <Text style={[stylesB.actionButtonText, {fontSize:16, paddingTop:8}]} >Chọn ảnh từ thư viện</Text>
-          </TouchableOpacity>
-      <View style={styles.swapInput}>
-
-          <TextInput style={styles.input}
-            placeholder="Tên món ăn"
-            onChangeText={(text) => setFoodName(text)}
-            value={foodName}
-          />
-          <TextInput style={styles.input}
-            placeholder="Thông tin món ăn"
-            onChangeText={(text) => setFoodInfo(text)}
-            value={foodInfo}
-          />
-          <TextInput style={styles.input}
-            placeholder="Giá"
-            onChangeText={(text) => setFoodPrice(text)}
-            value={foodPrice}
-          />
-          <TextInput style={styles.input}
-            placeholder="Số lượng"
-            onChangeText={(text) => setFoodQuantity(text)}
-            value={foodQuantity}
-          />
-          <TextInput style={styles.input}
-            placeholder="Danh mục"
-            onChangeText={(text) => setFoodCategory(text)}
-            value={foodCategory}
-          />
-          
-      </View>
-          <TouchableOpacity style={[stylesB.containerButton,styles.containerButton, {width:300} ]} onPress={handleCreateFood} >
-            <Text style={[stylesB.actionButtonText, {fontSize:16, paddingTop:8}]} >Thêm món ăn</Text>
-          </TouchableOpacity>
-
-          {/* <TouchableOpacity style={[stylesB.containerButton,styles.containerButton , {width:300}]}  >
-            <Text style={[stylesB.actionButtonText, {fontSize:16, paddingTop:8}]} >Cập nhập món ăn</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[stylesB.containerButton,styles.containerButton , {width:300}]}  >
-            <Text style={[stylesB.actionButtonText, {fontSize:16, paddingTop:8}]} >Xoá món ăn</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[stylesB.containerButton,styles.containerButton, {width:300} ]}  >
-            <Text style={[stylesB.actionButtonText, {fontSize:16, paddingTop:8}]} >Tìm món ăn</Text>
-          </TouchableOpacity> */}
-
+    <View style={[stylesB.container,{backgroundColor:'#ddd'}]}>
+        <View style={styles.containerImage}>
+          <Image  style={styles.logoFage1} source={require('../assets/photoInScreens/ImageHome1.png')} />
+        </View>
+        <View style={styles.containerItem}>
+            <TouchableOpacity style={styles.item} >
+                <Icon2 name="exchange" size={40} color="#F24822"></Icon2>
+            <Text style={styles.textItem}>Cập nhập sản phẩm</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.item} onPress={moveToAddFood}>
+                <Icon name="shopping-basket-add" size={40} color="#F24822"></Icon>
+                <Text style={styles.textItem}>Thêm sản phẩm</Text>
+            </TouchableOpacity >
+            <TouchableOpacity style={styles.item} onPress={moveToSearch}>
+                <Icon2 name="search" size={40} color="#F24822"></Icon2>
+                <Text style={styles.textItem}>Tìm kiếm sản phẩm</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.item} onPress={() => setModalVisible(true)}>
+            <Icon3 name="delete" size={40} color="#F24822"></Icon3>
+                <Text style={styles.textItem}>Xoá sản phẩm </Text> 
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.item, {width:'96%'}]} onPress={moveToUser}>
+                <Icon4 name="user-shield" size={40} color="#F24822"></Icon4>
+                <Text style={styles.textItem}>Tài khoản</Text>
+                </TouchableOpacity>
+        </View>
+        <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        >
+          <View style={styles.overlay}>
+          <TouchableWithoutFeedback onPress={handleModalPress}>
+              <View style={styles.centeredView} ref={modalRef}>
+          <View style={styles.modalView}>
+            <TextInput value={foodId} style={stylesB.textInput} placeholderTextColor='#888' placeholder="Nhập id món ăn"
+                onChangeText={(text) => setFoodId(text)} />
+            <TouchableOpacity style={[stylesB.containerButton, {height:50}]}  onPress={deleteFood}>
+              <Text style={[stylesB.actionButtonText, {fontSize:18}]}>Xoá món ăn</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+          </View>
+        
+      </Modal>
+        
+        
     </View>
   );
 
 };
 const styles = StyleSheet.create({
-  container:{
-    alignItems:'center',
-    flex:1,
-    width:'100%',
-    backgroundColor:'#fff'
-  },
-  imageFood:{
-    width:210,
-    height:210,
-    borderWidth:4,
-    borderColor:'#F24822',
-    marginTop:'10%',
-    marginBottom:20,
-    borderRadius:20
-  },
-  containerButton:{
-    height:40,
-    alignContent:'center',
-    justifyContent:'center',
-    marginTop:0,
-    borderRadius:14
-  },
-  swapInput:{
-    marginTop:10,
-    marginBottom:20
-  },
-  input:{
-    borderWidth:1,
-    margin:5,
-    height:40,
-    width:300,
-    borderRadius:10,
-    fontSize:18,
-    paddingLeft:10
-  },
-  button: {
-    width: 100
-  }
+    containerImage:{
+     
+    },
+    logoFage1:{
+      marginTop:'-16%',
+      borderRadius:10,
+      marginBottom:30,
+      width:390,
+      height:300,
+    },
+    containerItem:{
+        width:'100%',
+        height:300,
+        // backgroundColor:'#fff',
+        flexDirection:'row-reverse',
+        flexWrap: 'wrap'
+    },
+    item:{
+        width:190,
+        height:100,
+        backgroundColor:'#fff',
+        margin:5,
+        marginRight:8,
+        marginBottom:30,
+        borderRadius:10,
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 6,
+        justifyContent:'center',
+        alignItems:'center'
+    },
+    textItem:{
+        fontSize:16,
+        marginTop:6
+    },
+    centeredView: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 22,
+    },
+    modalView: {
+      width:390,
+      height:180,
+      margin: 20,
+      backgroundColor: '#fff',
+      borderRadius: 20,
+      padding: 35,
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+    },
+    modalText: {
+      marginBottom: 28,
+      textAlign: 'center',
+      fontSize: 18
+    },
+    overlay:{
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.4)', // Màu nền tối
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+ 
 })
 
 export default Restaurant;

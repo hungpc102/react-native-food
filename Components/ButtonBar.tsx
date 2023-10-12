@@ -14,7 +14,7 @@ const ButtonBar = () => {
 
   return (
     <Tab.Navigator
-      initialRouteName="UserScreen"
+      initialRouteName="HomePage2"
       screenOptions={(route) => ({
         headerShown:false,
         tabBarInactiveTintColor:'#333',

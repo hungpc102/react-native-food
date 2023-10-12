@@ -5,6 +5,7 @@ import { Props } from '../services/interfaces/navigationTypes'
 import { useRoute, RouteProp } from '@react-navigation/native';
 import {getFoodById} from '../services/getFoodById'
 
+
 type ParamList = {
   FoodDetail: { foodId: string }; 
 }
@@ -39,6 +40,7 @@ const FoodDetail = ({ navigation }: Props) => {
                 <Text style={styles.nameFood}>{food.FOOD_NAME}</Text>
             </View>
                 <View style={{width:'100%'}}>
+            <Text  style={styles.foodInfo}>ID: {food.FOOD_ID}</Text>
             <Text style={styles.foodInfo}>{food.FOOD_INFO}</Text>
                 <TouchableOpacity >
             <Text style={styles.textReview}>Xem đánh giá</Text>
@@ -76,7 +78,7 @@ const styles = StyleSheet.create({
     height:'48%',
     alignItems:'center',
     justifyContent:'center',
-    marginTop:'-60%'
+    marginTop:'-56%'
   },
   imgFood : {
     width:280,
