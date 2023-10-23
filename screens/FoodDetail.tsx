@@ -13,10 +13,26 @@ type ParamList = {
 const FoodDetail = ({ navigation }: Props) => {
   const [imageData, setImageData] = useState(''); 
   const [food, setFood] = useState<any>({})
+  const [quantity, setQuantity] = useState(1)
+  const [productQuantity, setProductQuantity] = useState(1)
 
   const route = useRoute<RouteProp<ParamList, 'FoodDetail'>>(); 
 
   const foodId = route.params.foodId;
+
+
+  const handleIncreaseQuantity = () => {
+    if(quantity < productQuantity){
+      setQuantity((prevQuantity) => prevQuantity + 1);
+    }
+  };
+
+  const handleDecreaseQuantity = () => {
+    if (quantity > 1) {
+      setQuantity((prevQuantity) => prevQuantity - 1);
+    }
+  };
+
 
   useEffect(() => {
     getFoodById(foodId)
@@ -25,6 +41,7 @@ const FoodDetail = ({ navigation }: Props) => {
         const imageData =  foodData.FOOD_PICTURE; 
         setFood(foodData);
         setImageData(imageData);
+        setProductQuantity( foodData.FOOD_QUANTITY)
       })
       .catch((error) => {
         console.error('Lỗi khi lấy dữ liệu từ API:', error);
@@ -50,13 +67,11 @@ const FoodDetail = ({ navigation }: Props) => {
             </View>
             <View style={styles.buttonBar}>
               <View style={styles.addFood}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={handleDecreaseQuantity}>
                   <Text style={styles.textAdd}>-</Text>
                 </TouchableOpacity>
-                <TouchableOpacity>
-                  <Text style={styles.textQuantity}>1</Text>
-                </TouchableOpacity>
-                <TouchableOpacity>
+                  <Text style={styles.textQuantity}>{quantity}</Text>
+                <TouchableOpacity onPress={handleIncreaseQuantity}>
                   <Text style={styles.textAdd}>+</Text>
                 </TouchableOpacity>
               </View>
@@ -78,7 +93,6 @@ const styles = StyleSheet.create({
     height:'48%',
     alignItems:'center',
     justifyContent:'center',
-    marginTop:'-56%'
   },
   imgFood : {
     width:280,
@@ -112,7 +126,10 @@ const styles = StyleSheet.create({
   },
   textQuantity:{
     fontSize:20,
-    marginTop:16
+    marginTop:16,
+    height:50,
+    width:30,
+    textAlign:'center'
   },
   buttonBar:{
     width:'100%',
@@ -126,9 +143,9 @@ const styles = StyleSheet.create({
     alignItems:'center'
   },
   addFood:{
- 
     flexDirection:'row',
-    marginRight:10
+    marginRight:20,
+    marginTop:6
   },
   textAdd:{
     fontSize:26,
@@ -137,13 +154,13 @@ const styles = StyleSheet.create({
     backgroundColor:'#ccc',
     width:40,
     height:40,
-    textAlign:'center'
+    textAlign:'center',
+    borderRadius:10
   },
   button:{
-    width:260,
+    width:200,
     height:50,
     borderRadius:10,
-    
   }
 })
 

@@ -12,6 +12,9 @@ export const apiFoodById = foodAPI + '/getById/'
 
 export const apiDeleteFood = foodAPI + '/delete-food/'
 
+export const apiUpdateFood = foodAPI + '/update-food/'
+
+
 
 
 

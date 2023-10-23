@@ -1,7 +1,6 @@
 
 import axios from 'axios';
 import { foodApiCreate } from '../api/FoodAPI';
-import * as FileSystem from 'expo-file-system';
 import { getAccessTokenFromStorage } from '../utils/TokenStorage';
 import {handleTokenRefresh} from './jwtServices'
 
@@ -21,11 +20,11 @@ export const createFood =  (
                     alert('Vui lòng điền đầy đủ thông tin về món ăn')
                     return
                 }
-                const imageBase64 = await FileSystem.readAsStringAsync(imageUri, { encoding: FileSystem.EncodingType.Base64 });
+               
                   
                 const formData = new FormData();
                   
-                formData.append('FOOD_PICTURE', imageBase64); 
+                formData.append('FOOD_PICTURE', imageUri); 
                 formData.append('FOOD_NAME', foodName);
                 formData.append('FOOD_INFO', foodInfo);
                 formData.append('FOOD_PRICE', foodPrice);

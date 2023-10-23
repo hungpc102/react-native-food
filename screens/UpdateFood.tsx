@@ -1,40 +1,69 @@
-import React, { useState } from 'react';
-import { View, Image, Text, TextInput, StyleSheet, KeyboardAvoidingView } from 'react-native';
+import React, { useState , useEffect} from 'react';
+import { View, Image, Text, TextInput, StyleSheet, KeyboardAvoidingView} from 'react-native';
 import { Props } from '../services/interfaces/navigationTypes';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import stylesB from '../assets/css/stylesB';
-import {createFood} from '../services/createFoodServices'
 import { pickImage } from '../Components/SelectedImage';
+import { getFoodById } from '../services/getFoodById';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import { updateFood } from '../services/updateFood';
 
-const AddFoodScreen = ({ navigation }: Props) => {
-  const [selectedImage, setSelectedImage] = useState('');
+type ParamList = {
+  FoodDetail: { foodId: string }; 
+}
+
+const UpdateFood = ({ navigation }: Props) => {
+  const [imageDataBase64, setImageDataBase64] = useState('');
   const [foodName, setFoodName] = useState('');
   const [foodInfo, setFoodInfo] = useState('');
   const [foodPrice, setFoodPrice] = useState('');
   const [foodQuantity, setFoodQuantity] = useState('');
   const [foodCategory, setFoodCategory] = useState('');
+  const route = useRoute<RouteProp<ParamList, 'FoodDetail'>>(); 
+  const foodId = route.params.foodId;
 
-  const handlePickImage = ()=>{
-    pickImage(setSelectedImage)
+  const handleSelectedImage = async () => {
+    await pickImage(setImageDataBase64)
+
   }
+  
+  useEffect(() => {
+    getFoodById(foodId)
+      .then((data) => {
+        const foodData: any = data.food; 
+        const imageData =  foodData.FOOD_PICTURE; 
+        setImageDataBase64(imageData);
+        setFoodName(foodData.FOOD_NAME)
+        setFoodInfo(foodData.FOOD_INFO)
+        setFoodPrice(foodData.FOOD_PRICE.toString())
+        setFoodQuantity(foodData.FOOD_QUANTITY.toString())
+        setFoodCategory(foodData.CATEGORY)
+      })
+      .catch((error) => {
+        alert('ID món ăn không tồn tại')
+        // console.error('Lỗi khi lấy dữ liệu từ API:', error);
+      });
+  }, []);
 
-const handleCreateFood = () => {
-  createFood(selectedImage, foodName, foodInfo, foodPrice, foodQuantity, foodCategory)
-}
+
+  const handleUpdateFood = () => {
+    updateFood(foodId, imageDataBase64, foodName, foodInfo, foodPrice, foodQuantity, foodCategory )
+  }
 
   return (
     
-    <KeyboardAvoidingView behavior='padding' style={[styles.container, {backgroundColor:'#eee'}]}>
-        <View style={styles.swapImage}>
-        {selectedImage && (
+         <KeyboardAvoidingView behavior='padding' style={[styles.container, {backgroundColor:'#eee'}]}>
+      
+      <View style={styles.swapImage}>
+        {imageDataBase64 && (
           <Image
-            source={{ uri: `data:image/jpeg;base64,${selectedImage}` }}
+            source={{ uri: `data:image/jpeg;base64,${imageDataBase64}` }}
             style={styles.imageFood}
           />
         )}
       </View>
       
-          <TouchableOpacity style={[stylesB.containerButton,styles.containerButton ]} onPress={handlePickImage} >
+          <TouchableOpacity style={[stylesB.containerButton,styles.containerButton ]} onPress={handleSelectedImage} >
             <Text style={[stylesB.actionButtonText, {fontSize:16, paddingTop:8}]} >Chọn ảnh từ thư viện</Text>
           </TouchableOpacity>
       <View style={styles.swapInput}>
@@ -66,11 +95,13 @@ const handleCreateFood = () => {
           />
           
       </View>
-        <TouchableOpacity style={[stylesB.containerButton,styles.containerButton, {width:340, height:50} ]} onPress={handleCreateFood} >
-        <Text style={[stylesB.actionButtonText, {fontSize:18, paddingTop:14}]} >Thêm món ăn</Text>
+        <TouchableOpacity style={[stylesB.containerButton,styles.containerButton, {width:340, height:50} ]} onPress={handleUpdateFood} >
+        <Text style={[stylesB.actionButtonText, {fontSize:18, paddingTop:14}]} >Cập nhập món ăn</Text>
         </TouchableOpacity>
 
     </KeyboardAvoidingView>
+
+   
   );
 
 };
@@ -124,4 +155,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default AddFoodScreen;
+export default UpdateFood;

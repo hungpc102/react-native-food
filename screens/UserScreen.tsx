@@ -4,10 +4,8 @@ import stylesB from '../assets/css/stylesB'
 import { Props } from '../services/interfaces/navigationTypes';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {logoutUser} from '../services/logoutServices'
-import axios from 'axios';
-import { apiGetUser, apiUpdatePassword } from '../api/UserAPI';
-import {getUserIdToStorage, getAccessTokenFromStorage} from '../utils/TokenStorage'
-import {handleTokenRefresh} from '../services/jwtServices'
+import {getInfoUser} from '../services/getUserById'
+import { updatePassword } from '../services/updatePasswordServices';
 
 
 const UserScreen = ({ navigation }: Props) => {
@@ -15,15 +13,13 @@ const UserScreen = ({ navigation }: Props) => {
   const [password, setPassword] = useState(''); 
   const [confirmPassword, setConfirmPassword] = useState('')
   const [newPassword, setNewPassword] = useState(''); 
+  const modalRef = useRef(null);
+  const [infoUser, setInfoUser] = useState<any>({})
 
   const usePassword = {
     "USER_PASSWORD":password,
     "NEW_USER_PASSWORD":newPassword,
   }
-
-  
-
-  const modalRef = useRef(null);
 
   const handleLogout = () => {
     logoutUser(navigation)
@@ -35,69 +31,14 @@ const UserScreen = ({ navigation }: Props) => {
     }
     setModalVisible(false)
   };
-
-  const [infoUser, setInfoUser] = useState<any>({})
-
   
-
-  const getInfoUser = async () => {
-    try {
-      const userId = await getUserIdToStorage(); 
-      const response = await axios.get(apiGetUser + userId);
-      const user = response.data.user;
-      setInfoUser(user);
-    } catch (error) {
-      console.error("Error fetching data from API:", error);
-    }
-  };
-
   useEffect(() => {
-   getInfoUser()
+    getInfoUser(setInfoUser)
   }, []);
 
-  let callCount = 0
 
-  const handelUpdatePassword = async() => {
-    if(callCount < 2){
-      callCount++;
-
-      if(!password || !newPassword || !confirmPassword){
-        return alert('Vui lòng điền đầy đủ thông tin')
-      }
-      const userId = await getUserIdToStorage(); 
-      const accessToken = await getAccessTokenFromStorage()
-
-      await axios.put(apiUpdatePassword + userId, usePassword, { 
-        headers : {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        }
-      })
-      .then (response => {
-        const handleVerify = async() => {
-          if(response.data.status === 401){
-            await handleTokenRefresh()
-            handelUpdatePassword()
-          }else{
-            console.log('Mật khẩu đã được cập nhật:', response.data);
-            callCount=0
-          alert('Đổi mật khẩu thành công')
-          }
-        }
-        handleVerify()
-      })
-      .catch(error => {   
-    
-          console.log('Lỗi khi cập nhật mật khẩu:', error);
-          alert('Lỗi đổi mật khẩu. Vui lòng điền đùng thông tin')
-
-      })
-      .finally(()=>{
-      setModalVisible(false)
-      });
-    } else{
-      alert('Lỗi đổi mật khẩu. Vui lòng đăng nhập lại')
-    }
+  const handelUpdatePassword = ()=>{
+    updatePassword(password ,newPassword, confirmPassword, usePassword , setModalVisible)
   }
   
     return(
@@ -179,16 +120,15 @@ const styles = StyleSheet.create({
   },
   swapUser:{
     backgroundColor:'#F24822',
-    height:170,
+    height:150,
     width:'100%',
     marginBottom:20
   },
   NameUser:{
     flexDirection:'row',
     marginLeft: 30,
-    marginTop: 90
-  }
-  ,
+    marginTop: 60
+  },
   textName:{
     color:'white',
     fontSize:30,
@@ -211,10 +151,11 @@ const styles = StyleSheet.create({
     marginBottom:30,
     marginRight:10,
     marginLeft:10,
-    paddingTop:20
+    paddingTop:20,
+    borderRadius:6
   },
   swapRowInfo:{
-    flexDirection:'row'
+    flexDirection:'row',
   },
   TextTitleInfo:{
     marginBottom:20,

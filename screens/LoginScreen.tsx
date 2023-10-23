@@ -32,7 +32,7 @@ const LoginScreen = ({ navigation }: Props) => {
   };
 
   return (
-    <KeyboardAvoidingView behavior='height' style={stylesB.container}>
+    <KeyboardAvoidingView behavior='height' style={[stylesB.container, {justifyContent:'center'}]}>
       <View style={styles.containerLogo}>
         <Image style={styles.logo} source={require('../assets/photoInScreens/FoodKart-login.jpg')} />
       </View>
@@ -86,7 +86,6 @@ const LoginScreen = ({ navigation }: Props) => {
 const styles = StyleSheet.create({
 
     containerLogo:{
-      marginTop:'-10%',
       marginBottom:-50,
     },
     logo:{

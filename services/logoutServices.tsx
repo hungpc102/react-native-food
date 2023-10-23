@@ -8,17 +8,17 @@ export const logoutUser = async (navigation:any) => {
     const refreshToken = await getRefreshTokenFromStorage();
 
     if (refreshToken) {
-      await saveLoginStatusToStorage('');
-      await saveUserIdToStorage('')
-
       const response = await axios.delete(userApiLogout, {
         data: {
           refreshToken: refreshToken,
         },
       });
-
-      if (response.status === 200) {
+      if (response.data.message === 'Logout!') {
+        await saveLoginStatusToStorage('');
+        await saveUserIdToStorage('')
         navigation.navigate('Login');
+      }else{
+        alert('Lỗi')
       }
     }
   } catch (error) {

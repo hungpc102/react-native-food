@@ -25,7 +25,7 @@ const RegisterScreen = ({ navigation }: Props) => {
   }
 
   return (
-    <KeyboardAvoidingView behavior='height' style={stylesB.container}  enabled>
+    <KeyboardAvoidingView behavior='height' style={[stylesB.container, {justifyContent:'center'}]}  enabled>
     {/* <View  style={stylesB.container}> */}
       <Text style={styles.trademark}>FOODKART</Text>
       <Text style={styles.textTitle}>Những món ăn ngon đang đợi bạn!</Text>
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     color:'#F24822',
     fontSize:50,
     fontWeight:'900',
-    marginBottom:40
+    marginBottom:40,
   },
   textTitle:{
     fontSize:18,

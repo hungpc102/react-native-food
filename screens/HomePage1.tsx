@@ -7,7 +7,7 @@ const HomePage1 = ({ navigation }: Props) => {
 
   
     return(
-        <View style={stylesB.container}>
+        <View style={[stylesB.container, {justifyContent:'center'}]}>
             <View style={styles.containerImage}>
                 <Image  style={styles.logoFage1} source={require('../assets/photoInScreens/ImageHome1.png')} />
             </View>

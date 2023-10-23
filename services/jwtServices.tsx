@@ -1,4 +1,4 @@
-import {getRefreshTokenFromStorage, saveTokensToStorage, getAccessTokenFromStorage} from '../utils/TokenStorage'
+import {getRefreshTokenFromStorage, saveTokensToStorage} from '../utils/TokenStorage'
 import axios from 'axios';
 import {userApiRefreshToken, apiProtectedRoute} from '../api/UserAPI'
 export const handleTokenRefresh = async () => {

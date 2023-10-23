@@ -11,6 +11,7 @@ import ButtonBar from './Components/ButtonBar'
 import Restaurant from './screens/Restaurant'
 import AddFoodScreen from './screens/AddFoodScreen';
 import UserScreen from './screens/UserScreen';
+import UpdateFood from './screens/UpdateFood'
 
 const Stack = createStackNavigator();
 
@@ -35,7 +36,7 @@ const App = () => {
         <Stack.Screen name="ButtonBar" component={ButtonBar} options={{ headerShown: false}} /> 
         <Stack.Screen name="Restaurant" component={Restaurant} options={{ headerShown: false}}/>
         <Stack.Screen name="AddFoodScreen" component={AddFoodScreen} options={commonScreenOptions}/>
-
+        <Stack.Screen name="UpdateFood" component={UpdateFood} options={commonScreenOptions}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

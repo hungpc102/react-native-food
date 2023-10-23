@@ -6,13 +6,16 @@ import Icon from 'react-native-vector-icons/Fontisto';
 import Icon2 from 'react-native-vector-icons/FontAwesome';
 import Icon3 from 'react-native-vector-icons/AntDesign';
 import Icon4 from 'react-native-vector-icons/FontAwesome5';
-import axios from 'axios';
-import {apiDeleteFood} from '../api/FoodAPI'
-import { getAccessTokenFromStorage} from '../utils/TokenStorage';
-import {handleTokenRefresh} from '../services/jwtServices'
+import {deleteFood} from '../services/deleteFoodServices'
 
 const Restaurant = ({ navigation }: Props) => {
- const moveToAddFood = ()=> {
+  
+   const [foodId, setFoodId] =useState('')
+   const [modalVisible, setModalVisible] = useState(false);
+   const modalRef = useRef(null);
+   const [modalUpdateFood, setModalUpdateFood] = useState(false)
+
+  const moveToAddFood = ()=> {
   navigation.navigate('AddFoodScreen')
  }
 
@@ -24,50 +27,28 @@ const Restaurant = ({ navigation }: Props) => {
   navigation.navigate('UserScreen')
  }
 
- const [foodId, setFoodId] =useState('')
- const [modalVisible, setModalVisible] = useState(false);
- const modalRef = useRef(null);
+ const moveToUpdateFood = (foodId:string)=>{
+  if(foodId){
+    navigation.navigate('UpdateFood', {foodId})
+    setModalUpdateFood(false) 
+  } else {
+    alert('Vui lòng nhập id món ăn')
+
+  }
+ }
 
  const handleModalPress = (e: any) => {
   if (modalRef.current && modalRef.current !== e.target) {
     return;
   }
   setModalVisible(false)
+  setModalUpdateFood(false)
+}
+  
+const handelDeletedFood = ()=>{
+  deleteFood(foodId, setModalUpdateFood)
 }
 
-
-let callCount = 0
- const deleteFood = async () => {
-  if(callCount < 2){
-    callCount++;
-    const accessToken = await getAccessTokenFromStorage()
-    try {
-      const response = await axios.delete(apiDeleteFood + foodId, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-  
-      if (response.status === 204) {
-        console.log('Món ăn đã được xoá thành công.');
-        callCount = 0
-        alert('Món ăn đã được xoá thành công')
-  
-      } else {
-        await handleTokenRefresh()
-        deleteFood()
-      }
-    } catch (error) {
-      console.error('Lỗi khi xoá món ăn:', error);
-    }
-    finally{
-      setModalVisible(false)
-    };
-  }else{
-    alert('Lỗi khi xoá món ăn. Vui lòng đăng nhập lại')
-  }
-  
-};
 
   return (
     <View style={[stylesB.container,{backgroundColor:'#ddd'}]}>
@@ -75,7 +56,7 @@ let callCount = 0
           <Image  style={styles.logoFage1} source={require('../assets/photoInScreens/ImageHome1.png')} />
         </View>
         <View style={styles.containerItem}>
-            <TouchableOpacity style={styles.item} >
+            <TouchableOpacity style={styles.item}  onPress={() => setModalUpdateFood(true)}>
                 <Icon2 name="exchange" size={40} color="#F24822"></Icon2>
             <Text style={styles.textItem}>Cập nhập sản phẩm</Text>
             </TouchableOpacity>
@@ -107,8 +88,29 @@ let callCount = 0
           <View style={styles.modalView}>
             <TextInput value={foodId} style={stylesB.textInput} placeholderTextColor='#888' placeholder="Nhập id món ăn"
                 onChangeText={(text) => setFoodId(text)} />
-            <TouchableOpacity style={[stylesB.containerButton, {height:50}]}  onPress={deleteFood}>
+            <TouchableOpacity style={[stylesB.containerButton, {height:50}]}  onPress={handelDeletedFood}>
               <Text style={[stylesB.actionButtonText, {fontSize:18}]}>Xoá món ăn</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+          </View>
+      </Modal>
+        
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalUpdateFood}
+        >
+          <View style={styles.overlay}>
+          <TouchableWithoutFeedback onPress={handleModalPress}>
+              <View style={styles.centeredView} ref={modalRef}>
+          <View style={styles.modalView}>
+            <TextInput value={foodId} style={stylesB.textInput} placeholderTextColor='#888' placeholder="Nhập id món ăn"
+                onChangeText={(text) => setFoodId(text)} />
+            <TouchableOpacity style={[stylesB.containerButton, {height:50}]}  onPress={() => moveToUpdateFood(foodId)}>
+              <Text style={[stylesB.actionButtonText, {fontSize:18}]}>Cập nhập món ăn</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -117,14 +119,13 @@ let callCount = 0
         
       </Modal>
         
-        
     </View>
   );
 
 };
 const styles = StyleSheet.create({
     containerImage:{
-     
+     marginTop:'40%'
     },
     logoFage1:{
       marginTop:'-16%',
@@ -155,7 +156,7 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.25,
         shadowRadius: 4,
-        elevation: 6,
+        elevation: 5,
         justifyContent:'center',
         alignItems:'center'
     },
