@@ -2,7 +2,7 @@
 import React from 'react';
 import HomePage2 from '../screens/HomePage2';
 import UserScreen from '../screens/UserScreen';
-import InvoiceScreen from '../screens/InvoiceScreen';
+import OrderScreen from '../screens/OrderScreen';
 import CartScreen from '../screens/CartScreen'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import IconCheck from 'react-native-vector-icons/Ionicons';
@@ -44,7 +44,8 @@ const ButtonBar = () => {
         }}
       />
 
-      <Tab.Screen name="CartScreen" component={CartScreen} options={{
+      <Tab.Screen name="CartScreen" component={CartScreen}  options={{
+        unmountOnBlur: true,
         tabBarLabel: 'Giỏ hàng',
         tabBarLabelStyle: {
           fontSize: 14,
@@ -57,8 +58,8 @@ const ButtonBar = () => {
         }}
       />
 
-      <Tab.Screen name="InvoiceScreen" component={InvoiceScreen} options={{
-        tabBarLabel: 'Hoá đơn',
+      <Tab.Screen name="OrderScreen" component={OrderScreen} options={{
+        tabBarLabel: 'Đơn hàng',
         tabBarLabelStyle: {
           fontSize: 14,
         },

@@ -91,7 +91,7 @@ const UserScreen = ({ navigation }: Props) => {
                 onChangeText={(text) => setNewPassword(text)}/>
             <TextInput value={confirmPassword} style={stylesB.textInput} placeholderTextColor='#888' placeholder="Nhập lại mật khẩu mới" secureTextEntry={true} 
                 onChangeText={(text) => setConfirmPassword(text)}/>
-            <TouchableOpacity style={[stylesB.containerButton, {height:50}]} onPress={handelUpdatePassword}>
+            <TouchableOpacity style={[stylesB.containerButton, {height:50, borderRadius:10}]} onPress={handelUpdatePassword}>
               <Text style={[stylesB.actionButtonText, {fontSize:18}]}>Thay đổi mật khẩu</Text>
             </TouchableOpacity>
           </View>
@@ -104,7 +104,7 @@ const UserScreen = ({ navigation }: Props) => {
 
           </View>
           <View style={styles.logout}>
-            <TouchableOpacity onPress={handleLogout} style={[stylesB.containerButton, {marginBottom:0, width:'90%', borderRadius:20, height:54}]}>
+            <TouchableOpacity onPress={handleLogout} style={[stylesB.containerButton, {marginBottom:0, width:'90%', borderRadius:10, height:54}]}>
             <Text style={[stylesB.actionButtonText, {fontSize:22}]}>Đăng xuất</Text>
             </TouchableOpacity>
           </View>

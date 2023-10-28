@@ -4,7 +4,7 @@ import stylesB from '../assets/css/stylesB'
 import { Props } from '../services/interfaces/navigationTypes';
 
 
-const InvoiceScreen = ({ navigation }: Props) => {
+const OrderScreen = ({ navigation }: Props) => {
 
     return(
         <View style={stylesB.container}>
@@ -36,4 +36,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default InvoiceScreen
+export default OrderScreen

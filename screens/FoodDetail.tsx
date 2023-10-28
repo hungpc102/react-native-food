@@ -3,12 +3,21 @@ import { View, Text, StyleSheet, TouchableOpacity,Image } from 'react-native';
 import stylesB from '../assets/css/stylesB'
 import { Props } from '../services/interfaces/navigationTypes'
 import { useRoute, RouteProp } from '@react-navigation/native';
-import {getFoodById} from '../services/getFoodById'
+import {getFoodById, } from '../services/getFoodById'
+import {createCart} from '../services/addFoodToCart'
+import CartScreen from './CartScreen';
+
 
 
 type ParamList = {
   FoodDetail: { foodId: string }; 
 }
+
+type CartItem = {
+  USER_ID: number;
+  FOOD_ID: number;
+  QUANTITY: number;
+};
 
 const FoodDetail = ({ navigation }: Props) => {
   const [imageData, setImageData] = useState(''); 
@@ -19,7 +28,7 @@ const FoodDetail = ({ navigation }: Props) => {
   const route = useRoute<RouteProp<ParamList, 'FoodDetail'>>(); 
 
   const foodId = route.params.foodId;
-
+  const foodIdNUmber=  parseInt(foodId, 10)
 
   const handleIncreaseQuantity = () => {
     if(quantity < productQuantity){
@@ -32,12 +41,17 @@ const FoodDetail = ({ navigation }: Props) => {
       setQuantity((prevQuantity) => prevQuantity - 1);
     }
   };
+      
+
+  const handleCreateCart = async () => {
+        await createCart(foodIdNUmber, quantity);
+  };
 
 
   useEffect(() => {
-    getFoodById(foodId)
+    getFoodById(foodIdNUmber)
       .then((data) => {
-        const foodData: any = data.food; 
+        const foodData: any = data; 
         const imageData =  foodData.FOOD_PICTURE; 
         setFood(foodData);
         setImageData(imageData);
@@ -62,7 +76,10 @@ const FoodDetail = ({ navigation }: Props) => {
                 <TouchableOpacity >
             <Text style={styles.textReview}>Xem đánh giá</Text>
                 </TouchableOpacity>
-                    <Text style={styles.textHeading}>Giá món: {food.FOOD_PRICE}</Text>
+                <View style={{flexDirection:'row'}}>
+                  <Text style={styles.textHeading}>Giá món:</Text>
+                  <Text style={[styles.textHeading, {color:'red', marginLeft:0}]}> {food.FOOD_PRICE ? food.FOOD_PRICE.toLocaleString() + 'đ' : 'N/A'}</Text>
+                </View>
             
             </View>
             <View style={styles.buttonBar}>
@@ -76,7 +93,7 @@ const FoodDetail = ({ navigation }: Props) => {
                 </TouchableOpacity>
               </View>
                <TouchableOpacity style={[stylesB.containerButton, styles.button]}
-                onPress={() => navigation.navigate('HomePage2')}>
+                onPress={handleCreateCart}>
                   <Text style={[stylesB.actionButtonText,{fontSize:20}]}>Thêm vào giỏ</Text>
                 </TouchableOpacity>
             </View>
@@ -119,10 +136,10 @@ const styles = StyleSheet.create({
     marginLeft:20
   },
   textHeading:{
-    fontSize:30,
-    fontWeight: '700',
+    fontSize:26,
+    fontWeight: '600',
     marginTop:20,
-    marginLeft:20
+    marginLeft:20,
   },
   textQuantity:{
     fontSize:20,
@@ -133,13 +150,13 @@ const styles = StyleSheet.create({
   },
   buttonBar:{
     width:'100%',
-    height:120,
+    height:100,
     position:'absolute',
-    top:'86%',
+    top:'88%',
     borderTopColor: '#ccc',
-    borderWidth:1,
+    borderTopWidth:1,
     flexDirection:'row',
-    justifyContent:'center',
+    justifyContent:'space-evenly',
     alignItems:'center'
   },
   addFood:{

@@ -21,6 +21,8 @@ const UpdateFood = ({ navigation }: Props) => {
   const [foodCategory, setFoodCategory] = useState('');
   const route = useRoute<RouteProp<ParamList, 'FoodDetail'>>(); 
   const foodId = route.params.foodId;
+  const foodIdNUmber=  parseInt(foodId, 10)
+
 
   const handleSelectedImage = async () => {
     await pickImage(setImageDataBase64)
@@ -28,7 +30,7 @@ const UpdateFood = ({ navigation }: Props) => {
   }
   
   useEffect(() => {
-    getFoodById(foodId)
+    getFoodById(foodIdNUmber)
       .then((data) => {
         const foodData: any = data.food; 
         const imageData =  foodData.FOOD_PICTURE; 

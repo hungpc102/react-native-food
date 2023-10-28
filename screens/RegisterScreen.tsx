@@ -26,7 +26,6 @@ const RegisterScreen = ({ navigation }: Props) => {
 
   return (
     <KeyboardAvoidingView behavior='height' style={[stylesB.container, {justifyContent:'center'}]}  enabled>
-    {/* <View  style={stylesB.container}> */}
       <Text style={styles.trademark}>FOODKART</Text>
       <Text style={styles.textTitle}>Những món ăn ngon đang đợi bạn!</Text>
         <TextInput style={stylesB.textInput} placeholder="Họ và tên" value={name}
@@ -41,7 +40,7 @@ const RegisterScreen = ({ navigation }: Props) => {
         onChangeText={(text) => setPhone(text)}/>
       
       {loading ?(
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#F24822" />
         ) : (
           <>
           <TouchableOpacity style={[stylesB.containerButton, {marginBottom:30, marginTop:40}]} onPress={handleRegister}>

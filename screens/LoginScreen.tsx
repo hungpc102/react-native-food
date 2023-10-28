@@ -18,7 +18,7 @@ const LoginScreen = ({ navigation }: Props) => {
   }
   
   const [isChecked, setIsChecked] = useState(false);
-  const checkmarkIcon = <Icon name="check" size={16} color="blue" />;
+  const checkmarkIcon = <Icon name="check" size={16} color="F24822" />;
   const toggleCheckbox = () => {
     setIsChecked(!isChecked);
   };
