@@ -1,8 +1,8 @@
 
 import axios from 'axios';
-import { foodApiCreate } from '../api/FoodAPI';
-import { getAccessTokenFromStorage } from '../utils/TokenStorage';
-import {handleTokenRefresh} from './jwtServices'
+import { foodApiCreate } from '../../api/FoodAPI';
+import { getAccessTokenFromStorage } from '../../utils/TokenStorage';
+import {handleTokenRefresh} from '../jwtService/jwtServices'
 
 export const createFood =  (
     imageUri: string, 
@@ -57,7 +57,7 @@ export const createFood =  (
                 throw new Error('Error creating food: ' + error.message);
               }
         }else{
-            alert('Tạo món ăn lỗi. Vui lòng đăng nhập lại')
+            alert('Đăng nhập hết hạn. Vui lòng đăng nhập lại')
         }
     }
         

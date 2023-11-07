@@ -1,6 +1,6 @@
 import axios from "axios";
-import { getUserIdToStorage } from "../utils/TokenStorage";
-import {apiCreateCart} from '../api/CartAPI'
+import { getUserIdToStorage } from "../../utils/TokenStorage";
+import {apiCreateCart} from '../../api/CartAPI'
 
 export const createCart = async(food_id:number, quantity:number)=>{
     const user_id = await getUserIdToStorage()

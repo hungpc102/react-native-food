@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/Fontisto';
 import Icon2 from 'react-native-vector-icons/FontAwesome';
 import Icon3 from 'react-native-vector-icons/AntDesign';
 import Icon4 from 'react-native-vector-icons/FontAwesome5';
-import {deleteFood} from '../services/deleteFoodServices'
+import {deleteFood} from '../services/foodService/deleteFoodServices'
 
 const Restaurant = ({ navigation }: Props) => {
   

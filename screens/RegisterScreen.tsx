@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator,Alert ,KeyboardAvoidingView} from 'react-native';
 import stylesB from '../assets/css/stylesB'
 import {Props } from '../services/interfaces/navigationTypes';
-import { register } from '../services/registerServices'
+import { register } from '../services/userService.tsx/registerServices'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const RegisterScreen = ({ navigation }: Props) => {

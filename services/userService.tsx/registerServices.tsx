@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { userApiRegister } from '../api/UserAPI';
-import { validateEmail, validatePassword } from '../utils/Validate';
+import { userApiRegister } from '../../api/UserAPI';
+import { validateEmail, validatePassword } from '../../utils/Validate';
 
 export const register = async (
     name:string,

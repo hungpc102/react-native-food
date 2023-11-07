@@ -1,5 +1,5 @@
-import { getUserIdToStorage } from '../utils/TokenStorage';
-import { apiUpdateQuantity } from '../api/CartAPI';
+import { getUserIdToStorage } from '../../utils/TokenStorage';
+import { apiUpdateQuantity } from '../../api/CartAPI';
 import axios from 'axios';
 
 export const updateQuantity = async (foodId: number, quantity: number) => {
@@ -21,6 +21,7 @@ export const updateQuantity = async (foodId: number, quantity: number) => {
     }
   } catch (error) {
     // Xử lý lỗi nếu có lỗi trong quá trình gửi yêu cầu
+    
     console.error('Lỗi khi gửi yêu cầu cập nhật quantity:', error);
   }
 };

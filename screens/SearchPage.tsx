@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity,Image,TextInput,FlatList } fro
 import stylesB from '../assets/css/stylesB'
 import { Props } from '../services/interfaces/navigationTypes';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {searchFood} from '../services/searchFood'
+import {searchFood} from '../services/foodService/searchFood'
 
 const SearchScreen = ({ navigation }: Props) => {
 

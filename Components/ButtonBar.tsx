@@ -2,11 +2,11 @@
 import React from 'react';
 import HomePage2 from '../screens/HomePage2';
 import UserScreen from '../screens/UserScreen';
-import OrderScreen from '../screens/OrderScreen';
 import CartScreen from '../screens/CartScreen'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import IconCheck from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import TopBarOrder from './TopBarOrder'
 
 
 const ButtonBar = () => {
@@ -23,8 +23,8 @@ const ButtonBar = () => {
           height: 80, 
           paddingBottom:20,
           borderTopWidth:2,
-          borderTopColor: '#EFEFEF',
-          // elevation: 10,
+          borderTopColor: '#ddd',
+          elevation: 10,
         },
         
       })}
@@ -58,7 +58,8 @@ const ButtonBar = () => {
         }}
       />
 
-      <Tab.Screen name="OrderScreen" component={OrderScreen} options={{
+      <Tab.Screen name="TopBarOrder" component={TopBarOrder} 
+      options={{
         tabBarLabel: 'Đơn hàng',
         tabBarLabelStyle: {
           fontSize: 14,

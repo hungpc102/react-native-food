@@ -1,5 +1,5 @@
 
-import{apiFoodById} from '../api/FoodAPI'
+import{apiFoodById} from '../../api/FoodAPI'
 
 import axios from 'axios';
 

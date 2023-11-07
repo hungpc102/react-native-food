@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { saveTokensToStorage, saveLoginStatusToStorage , saveUserIdToStorage} from '../utils/TokenStorage';
-import { userApiLogin, apiProtectedRoute } from '../api/UserAPI';
+import { saveTokensToStorage, saveLoginStatusToStorage , saveUserIdToStorage} from '../../utils/TokenStorage';
+import { userApiLogin, apiProtectedRoute } from '../../api/UserAPI';
 
 export async function routeLogin(accessToken:any,  navigation:any, redirectTo:string) {
   try {

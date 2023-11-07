@@ -38,7 +38,7 @@ const App = () => {
         <Stack.Screen name="Restaurant" component={Restaurant} options={{ headerShown: false}}/>
         <Stack.Screen name="AddFoodScreen" component={AddFoodScreen} options={commonScreenOptions}/>
         <Stack.Screen name="UpdateFood" component={UpdateFood} options={commonScreenOptions}/>
-        <Stack.Screen name="FoodDelivery" component={FoodDelivery} options={commonScreenOptions}/>
+        <Stack.Screen name="FoodDelivery" component={FoodDelivery} options={{ headerShown: true, headerTitle: 'Thanh toán'}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

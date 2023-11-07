@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import {foodApiGetAll} from '../api/FoodAPI'
+import {foodApiGetAll} from '../../api/FoodAPI'
 
 export const getAllFoods = async () => {
   try {

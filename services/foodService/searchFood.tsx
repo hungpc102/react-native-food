@@ -1,6 +1,6 @@
 
 import axios from 'axios';
-import { apiSearchFood } from '../api/FoodAPI';
+import { apiSearchFood } from '../../api/FoodAPI';
 
 export const searchFood = async (searchText:string) => {
   try {

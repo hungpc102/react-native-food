@@ -1,6 +1,6 @@
-import { getLoginStatusToStorage,saveTokensToStorage, getAccessTokenFromStorage, getRefreshTokenFromStorage } from "../utils/TokenStorage";
+import { getLoginStatusToStorage,saveTokensToStorage, getAccessTokenFromStorage, getRefreshTokenFromStorage } from "../../utils/TokenStorage";
 import axios from "axios";
-import {userApiStatusLogin, userApiRefreshToken} from '../api/UserAPI'
+import {userApiStatusLogin, userApiRefreshToken} from '../../api/UserAPI'
 import { routeLogin } from './loginFunctions'
 
 export const saveLogin = async (setLoading:(loading:boolean)=> void, navigation:any) => {

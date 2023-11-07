@@ -1,7 +1,7 @@
-import {getUserIdToStorage, getAccessTokenFromStorage} from '../utils/TokenStorage'
-import {apiUpdatePassword} from '../api/UserAPI'
+import {getUserIdToStorage, getAccessTokenFromStorage} from '../../utils/TokenStorage'
+import {apiUpdatePassword} from '../../api/UserAPI'
 import axios from 'axios'
-import {handleTokenRefresh} from './jwtServices'
+import {handleTokenRefresh} from '../jwtService/jwtServices'
 
 let callCount = 0
 

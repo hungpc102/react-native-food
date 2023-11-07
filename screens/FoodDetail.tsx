@@ -3,11 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity,Image } from 'react-native';
 import stylesB from '../assets/css/stylesB'
 import { Props } from '../services/interfaces/navigationTypes'
 import { useRoute, RouteProp } from '@react-navigation/native';
-import {getFoodById, } from '../services/getFoodById'
-import {createCart} from '../services/addFoodToCart'
-import CartScreen from './CartScreen';
-
-
+import {getFoodById, } from '../services/foodService/getFoodById'
+import {createCart} from '../services/cartService/addFoodToCart'
 
 type ParamList = {
   FoodDetail: { foodId: string }; 
@@ -143,7 +140,7 @@ const styles = StyleSheet.create({
   },
   textQuantity:{
     fontSize:20,
-    marginTop:16,
+    marginTop:12,
     height:50,
     width:30,
     textAlign:'center'
@@ -157,27 +154,28 @@ const styles = StyleSheet.create({
     borderTopWidth:1,
     flexDirection:'row',
     justifyContent:'space-evenly',
-    alignItems:'center'
+    alignItems:'center',
   },
   addFood:{
     flexDirection:'row',
     marginRight:20,
-    marginTop:6
+    marginBottom:14
   },
   textAdd:{
-    fontSize:26,
+    fontSize:22,
     margin:10,
-    paddingTop:2,
+    paddingTop:1,
     backgroundColor:'#ccc',
-    width:40,
-    height:40,
+    width:34,
+    height:34,
     textAlign:'center',
-    borderRadius:10
+    borderRadius:5
   },
   button:{
     width:200,
     height:50,
     borderRadius:10,
+    marginBottom:34
   }
 })
 

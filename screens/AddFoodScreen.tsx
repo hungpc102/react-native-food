@@ -3,7 +3,7 @@ import { View, Image, Text, TextInput, StyleSheet, KeyboardAvoidingView } from '
 import { Props } from '../services/interfaces/navigationTypes';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import stylesB from '../assets/css/stylesB';
-import {createFood} from '../services/createFoodServices'
+import {createFood} from '../services/foodService/createFoodServices'
 import { pickImage } from '../Components/SelectedImage';
 
 const AddFoodScreen = ({ navigation }: Props) => {

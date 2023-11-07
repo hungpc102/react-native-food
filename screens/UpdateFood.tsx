@@ -4,9 +4,9 @@ import { Props } from '../services/interfaces/navigationTypes';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import stylesB from '../assets/css/stylesB';
 import { pickImage } from '../Components/SelectedImage';
-import { getFoodById } from '../services/getFoodById';
+import { getFoodById } from '../services/foodService/getFoodById';
 import { useRoute, RouteProp } from '@react-navigation/native';
-import { updateFood } from '../services/updateFood';
+import { updateFood } from '../services/foodService/updateFood';
 
 type ParamList = {
   FoodDetail: { foodId: string }; 

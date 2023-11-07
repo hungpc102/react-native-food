@@ -1,8 +1,8 @@
 
-import {getAccessTokenFromStorage} from '../utils/TokenStorage'
+import {getAccessTokenFromStorage} from '../../utils/TokenStorage'
 import axios from 'axios';
-import {apiDeleteFood} from '../api/FoodAPI'
-import {handleTokenRefresh} from './jwtServices'
+import {apiDeleteFood} from '../../api/FoodAPI'
+import {handleTokenRefresh} from '../jwtService/jwtServices'
 let callCount = 0
  export const deleteFood = async (foodId:string, setModalVisible:(modalVisible:boolean)=> void) => {
   if(!foodId){

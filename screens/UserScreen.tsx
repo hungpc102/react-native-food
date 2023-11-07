@@ -3,9 +3,9 @@ import { View, Text, StyleSheet, TouchableOpacity, Modal, Pressable, TextInput, 
 import stylesB from '../assets/css/stylesB'
 import { Props } from '../services/interfaces/navigationTypes';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {logoutUser} from '../services/logoutServices'
-import {getInfoUser} from '../services/getUserById'
-import { updatePassword } from '../services/updatePasswordServices';
+import {logoutUser} from '../services/userService.tsx/logoutServices'
+import {getInfoUser} from '../services/userService.tsx/getUserById'
+import { updatePassword } from '../services/userService.tsx/updatePasswordServices';
 
 
 const UserScreen = ({ navigation }: Props) => {

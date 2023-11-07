@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, ActivityIndicator } from 'react-native';
 import stylesB from '../assets/css/stylesB';
 import { Props } from '../services/interfaces/navigationTypes';
-import { getInfoCart } from '../services/getCartById';
-import { getFoodById } from '../services/getFoodById';
-import { updateQuantity } from '../services/updateQuantityFood';
+import { getInfoCart } from '../services/cartService/getCartById';
+import { getFoodById } from '../services/foodService/getFoodById';
+import { updateQuantity } from '../services/cartService/updateQuantityFood';
 
 type CartItem = {
   USER_ID: number;
@@ -28,13 +28,23 @@ const CartScreen = ({ navigation }: Props) => {
   const [totalPrice, setTotalPrice] = useState(0);
   const Separator = () => <View style={styles.separator} />;
 
+  const foodData = foodInfo.map((item) => ({
+    foodId: item.FOOD_ID,
+    foodName: item.FOOD_NAME,
+    foodPrice: item.FOOD_PRICE,
+    foodImage: item.FOOD_PICTURE,
+    foodQuantity: infoCart.find((cart) => cart.FOOD_ID === item.FOOD_ID)?.QUANTITY || 0,
+  }));
+  
+
   const handleIncreaseQuantity = async(foodId: number, productQuantity: number, quantityCart:number) => {
     setLoading(true)
-    if (quantityCart < productQuantity) {
-      await updateQuantity(foodId, quantityCart + 1); 
-      setDataUpdated(false);
-    }
-    setLoading(false)
+      if (quantityCart < productQuantity) {
+        await updateQuantity(foodId, quantityCart + 1); 
+        setDataUpdated(false);
+      }
+      setLoading(false)
+    
   };
 
   const handleDecreaseQuantity = async(foodId: number, quantityCart:number) => {
@@ -46,7 +56,8 @@ const CartScreen = ({ navigation }: Props) => {
     setLoading(false)
   };
 
-  const showCarts = async () => {
+
+ const showCarts = async () => {
     try {
       await getInfoCart(setInfoCart);
       if (infoCart.length > 0) {
@@ -55,7 +66,7 @@ const CartScreen = ({ navigation }: Props) => {
           const foodPromises = foodIds.map((foodId) => getFoodById(foodId));
           const foods = await Promise.all(foodPromises);
           setFoodInfo(foods);
-  
+          
           // Tính toán tổng giá ở đây
           const totalPrice = foods.reduce((acc, food) => {
             const cartItem = infoCart.find((cart) => cart.FOOD_ID === food.FOOD_ID);
@@ -64,20 +75,24 @@ const CartScreen = ({ navigation }: Props) => {
             }
             return acc;
           }, 0);
+          
           setTotalPrice(totalPrice);
-  
           setDataUpdated(true);
         }
       }
+      setDataUpdated(true);
     } catch (error) {
       console.error('Lỗi khi truy xuất dữ liệu:', error);
     }
   };
 
-  const handleDelivery = ()=>{
-    navigation.navigate('FoodDelivery')
+  const handleDelivery = () => {
+    navigation.navigate('FoodDelivery', {
+      foodData: foodData,
+      totalPrice: totalPrice,
+      infoCart: infoCart
+    });
   }
-
 
   useEffect(() => {
     if (!dataUpdated) { 
@@ -95,48 +110,51 @@ const CartScreen = ({ navigation }: Props) => {
       </View>
       <View style={styles.line} />
       <View style={{ paddingBottom:210}}>
-        <FlatList
-        data={foodInfo}
-        keyExtractor={(item) => item.FOOD_ID.toString()}
-        ItemSeparatorComponent={Separator}
-        renderItem={({ item }) => {
-          const cartItem = infoCart.find((cart) => cart.FOOD_ID === item.FOOD_ID);
-          const itemPrice = cartItem ? cartItem.QUANTITY * item.FOOD_PRICE : 0;
+      <FlatList
+  data={foodInfo}
+  keyExtractor={(item) => item.FOOD_ID.toString()}
+  ItemSeparatorComponent={Separator}
+  renderItem={({ item }) => {
+    const cartItem = infoCart.find((cart) => cart.FOOD_ID === item.FOOD_ID);
 
-          return (
-            <View style={styles.item}>
-              <View style={{flexDirection:'row', alignItems:'center'}}>
-                <Image source={{ uri: `data:image/jpeg;base64,${item.FOOD_PICTURE}` }} style={styles.image} />
-              <View>
-                <Text style={styles.textName}>{item.FOOD_NAME}</Text>
-                <Text style={styles.textPrice}>{itemPrice.toLocaleString()}đ</Text>
-              </View>
-              </View>
-              
-      
-              <View style={styles.addFood}>
-                <TouchableOpacity onPress={() => handleDecreaseQuantity(item.FOOD_ID, cartItem?.QUANTITY ?? 0)}>
-                  <Text style={styles.textAdd}>-</Text>
-                </TouchableOpacity>
-                <Text style={styles.textQuantity}>{cartItem ? cartItem.QUANTITY : 0}</Text>
-                <TouchableOpacity
-                  onPress={() => handleIncreaseQuantity(item.FOOD_ID, item.FOOD_QUANTITY, cartItem?.QUANTITY ?? 0)}>
-                  <Text style={styles.textAdd}>+</Text>
-                </TouchableOpacity>
-              </View>
+    if (cartItem) {
+      const itemPrice = cartItem.QUANTITY * item.FOOD_PRICE;
+      return (
+        <View style={styles.item}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Image source={{ uri: `data:image/jpeg;base64,${item.FOOD_PICTURE}` }} style={styles.image} />
+            <View>
+              <Text style={styles.textName}>{item.FOOD_NAME}</Text>
+              <Text style={styles.textPrice}>{itemPrice.toLocaleString('vi-VN')}đ</Text>
             </View>
-            
-          );
-        }}
-       
-      />
+          </View>
+
+          <View style={styles.addFood}>
+            <TouchableOpacity onPress={() => handleDecreaseQuantity(item.FOOD_ID, cartItem.QUANTITY)}>
+              <Text style={styles.textAdd}>-</Text>
+            </TouchableOpacity>
+            <Text style={styles.textQuantity}>{cartItem.QUANTITY}</Text>
+            <TouchableOpacity
+              onPress={() => handleIncreaseQuantity(item.FOOD_ID, item.FOOD_QUANTITY, cartItem.QUANTITY)}>
+              <Text style={styles.textAdd}>+</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    } else {
+      setTotalPrice(0)
+      return <Text style={styles.item}>Không có món ăn</Text>
+    }
+  }}
+/>
       </View>
       
 
         <View style={styles.buttonBar}>
-            <Text style={styles.totalPrice}>{totalPrice.toLocaleString()}đ</Text>
-            <TouchableOpacity style={[stylesB.containerButton, styles.button]} onPress={handleDelivery}>
-            <Text style={[stylesB.actionButtonText,{fontSize:20}]}>Giao hàng</Text>
+            <Text style={styles.totalPrice}>{totalPrice.toLocaleString('vi-VN')}đ</Text>
+            <TouchableOpacity style={[stylesB.containerButton, styles.button,{ backgroundColor: totalPrice === 0 ? 'rgb(242, 150, 120)': '#F24822'}]} onPress={handleDelivery}
+             disabled={totalPrice===0}> 
+            <Text style={[stylesB.actionButtonText,{fontSize:20}]}>Mua hàng</Text>
             </TouchableOpacity>
         </View>
         
@@ -224,18 +242,18 @@ const styles = StyleSheet.create({
     marginTop:70
   },
   textAdd:{
-    fontSize:20,
+    fontSize:22,
     margin:8,
-    paddingTop:0,
+    paddingTop:1,
     backgroundColor:'#ccc',
-    width:30,
-    height:30,
+    width:34,
+    height:34,
     textAlign:'center',
     borderRadius:5
   },
   textQuantity:{
     fontSize:18,
-    marginTop:10,
+    marginTop:12,
     height:50,
     width:30,
     textAlign:'center'
@@ -270,7 +288,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'gray', 
     width:'65%',
     marginLeft:'30%',
-    marginTop:6
+    marginTop:4
   },
 })
 

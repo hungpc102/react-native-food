@@ -1,7 +1,7 @@
 import axios from "axios";
-import {getAccessTokenFromStorage} from '../utils/TokenStorage'
-import {apiUpdateFood} from '../api/FoodAPI'
-import {handleTokenRefresh} from '../services/jwtServices'
+import {getAccessTokenFromStorage} from '../../utils/TokenStorage'
+import {apiUpdateFood} from '../../api/FoodAPI'
+import {handleTokenRefresh} from '../jwtService/jwtServices'
 
 export const updateFood = (
     foodId: string,

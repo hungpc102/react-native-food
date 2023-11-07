@@ -8,5 +8,8 @@ export const apiGetCart = cartAPI + '/get-cart/'
 
 export const apiUpdateQuantity = cartAPI + '/update-quantity/'
 
+export const apiDeleteAllCart = cartAPI + '/delete-cart/'
+
+
 
 

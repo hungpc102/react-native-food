@@ -1,9 +1,9 @@
-import React, { useState, useEffect} from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, ScrollView, LayoutAnimation } from 'react-native';
+import React, { useState, useEffect, useRef} from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, ScrollView, LayoutAnimation, Pressable } from 'react-native';
 import stylesB from '../assets/css/stylesB'
 import { Props } from '../services/interfaces/navigationTypes';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {getAllFoods} from '../services/getAllFood'
+import {getAllFoods} from '../services/foodService/getAllFood'
 
 const HomePage2 = ({ navigation }: Props) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('');
@@ -42,6 +42,25 @@ const HomePage2 = ({ navigation }: Props) => {
     
   }
 
+  const scrollViewRef = useRef(null);
+  const selectedRef = useRef(null);
+
+  // Sử dụng useEffect để tự động cuộn đến vị trí mục đã chọn khi selectedCategory thay đổi
+  useEffect(() => {
+    if (scrollViewRef.current && selectedCategory) {
+      // Tìm index của selectedCategory trong mảng categories
+      const index = categories.indexOf(selectedCategory);
+
+      if (index !== -1) {
+        // Tính toán vị trí ngang để cuộn đến
+        const offsetX = index * 68; // Thay ITEM_WIDTH bằng độ rộng của mỗi mục
+
+        // Sử dụng scrollTo để cuộn đến vị trí đã tính toán
+        (scrollViewRef.current as ScrollView).scrollTo({ x: offsetX, animated: true });
+      }
+    }
+  }, [selectedCategory]);
+
   return (
     <View style={[stylesB.container, {}]}>
       <Text style={styles.textTitle}>Tìm các món ăn bạn yêu thích nhất!</Text>
@@ -52,19 +71,28 @@ const HomePage2 = ({ navigation }: Props) => {
         </View>
       </TouchableOpacity>
       <View style={styles.menus}>
-      <ScrollView horizontal={true}>
+      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} ref={scrollViewRef}>
           {categories.map((category) => (
-            <TouchableOpacity
+            <Pressable
               key={category}
               onPress={() => handleCategoryPress(category)}
             >
 
               <Text style={styles.category}>{category}</Text>
-            {selectedCategory === category && (
-              <View style={styles.selected}></View>
-            )}
-            </TouchableOpacity>
+            </Pressable>
           ))}
+
+<View
+        ref={selectedRef}
+        style={[
+          styles.selected,
+          {
+            left: selectedCategory
+              ? categories.indexOf(selectedCategory) * 136
+              : 0,
+          },
+        ]}
+      />
       </ScrollView>
 
       </View>
@@ -114,7 +142,7 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   selected: {
-    height: 8,
+    height: 5,
     backgroundColor: '#F24822',
     borderRadius: 5,
     bottom: 0,

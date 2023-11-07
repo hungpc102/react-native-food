@@ -1,6 +1,6 @@
-import {getUserIdToStorage} from '../utils/TokenStorage'
+import {getUserIdToStorage} from '../../utils/TokenStorage'
 import axios from 'axios';
-import {apiGetCart} from '../api/CartAPI'
+import {apiGetCart} from '../../api/CartAPI'
 
 export const getInfoCart = async (setInfoCart:any) => {
     try {
