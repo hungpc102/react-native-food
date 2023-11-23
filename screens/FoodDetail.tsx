@@ -42,6 +42,7 @@ const FoodDetail = ({ navigation }: Props) => {
 
   const handleCreateCart = async () => {
         await createCart(foodIdNUmber, quantity);
+        navigation.navigate("ButtonBar")
   };
 
 
@@ -81,12 +82,12 @@ const FoodDetail = ({ navigation }: Props) => {
             </View>
             <View style={styles.buttonBar}>
               <View style={styles.addFood}>
-                <TouchableOpacity onPress={handleDecreaseQuantity}>
-                  <Text style={styles.textAdd}>-</Text>
+                <TouchableOpacity style={styles.textAdd} onPress={handleDecreaseQuantity}>
+                  <Text style={{fontSize:24}}>-</Text>
                 </TouchableOpacity>
                   <Text style={styles.textQuantity}>{quantity}</Text>
-                <TouchableOpacity onPress={handleIncreaseQuantity}>
-                  <Text style={styles.textAdd}>+</Text>
+                <TouchableOpacity style={styles.textAdd} onPress={handleIncreaseQuantity}>
+                  <Text style={{fontSize:24}}>+</Text>
                 </TouchableOpacity>
               </View>
                <TouchableOpacity style={[stylesB.containerButton, styles.button]}
@@ -100,7 +101,7 @@ const FoodDetail = ({ navigation }: Props) => {
 }
 
 const styles = StyleSheet.create({
-    containerImage:{
+  containerImage:{
     backgroundColor:'#ccc',
     borderRadius:50,
     width:'94%',
@@ -140,7 +141,7 @@ const styles = StyleSheet.create({
   },
   textQuantity:{
     fontSize:20,
-    marginTop:12,
+    marginTop:14,
     height:50,
     width:30,
     textAlign:'center'
@@ -159,17 +160,17 @@ const styles = StyleSheet.create({
   addFood:{
     flexDirection:'row',
     marginRight:20,
-    marginBottom:14
+    marginBottom:14,
+    justifyContent:'center'
   },
   textAdd:{
-    fontSize:22,
     margin:10,
-    paddingTop:1,
     backgroundColor:'#ccc',
     width:34,
     height:34,
-    textAlign:'center',
-    borderRadius:5
+    borderRadius:5,
+    justifyContent:'center',
+    alignItems:"center"
   },
   button:{
     width:200,

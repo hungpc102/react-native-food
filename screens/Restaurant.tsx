@@ -1,5 +1,5 @@
 import React, { useState , useRef} from 'react';
-import { View, Image, Text, TextInput, StyleSheet, TouchableOpacity, Modal,TouchableWithoutFeedback} from 'react-native';
+import { View, Image, Text, TextInput, StyleSheet, TouchableOpacity, Modal,TouchableWithoutFeedback, Dimensions} from 'react-native';
 import { Props } from '../services/interfaces/navigationTypes';
 import stylesB from '../assets/css/stylesB';
 import Icon from 'react-native-vector-icons/Fontisto';
@@ -7,6 +7,9 @@ import Icon2 from 'react-native-vector-icons/FontAwesome';
 import Icon3 from 'react-native-vector-icons/AntDesign';
 import Icon4 from 'react-native-vector-icons/FontAwesome5';
 import {deleteFood} from '../services/foodService/deleteFoodServices'
+
+const { width, height } = Dimensions.get('window');
+
 
 const Restaurant = ({ navigation }: Props) => {
   
@@ -49,6 +52,10 @@ const handelDeletedFood = ()=>{
   deleteFood(foodId, setModalUpdateFood)
 }
 
+const moveToOrderManagement = ()=> {
+  navigation.navigate('OrderManagement')
+ }
+
 
   return (
     <View style={[stylesB.container,{backgroundColor:'#ddd'}]}>
@@ -57,25 +64,29 @@ const handelDeletedFood = ()=>{
         </View>
         <View style={styles.containerItem}>
             <TouchableOpacity style={styles.item}  onPress={() => setModalUpdateFood(true)}>
-                <Icon2 name="exchange" size={40} color="#F24822"></Icon2>
+                <Icon2 name="exchange" size={36} color="#F24822"></Icon2>
             <Text style={styles.textItem}>Cập nhập sản phẩm</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.item} onPress={moveToAddFood}>
-                <Icon name="shopping-basket-add" size={40} color="#F24822"></Icon>
+                <Icon name="shopping-basket-add" size={36} color="#F24822"></Icon>
                 <Text style={styles.textItem}>Thêm sản phẩm</Text>
             </TouchableOpacity >
             <TouchableOpacity style={styles.item} onPress={moveToSearch}>
-                <Icon2 name="search" size={40} color="#F24822"></Icon2>
+                <Icon2 name="search" size={36} color="#F24822"></Icon2>
                 <Text style={styles.textItem}>Tìm kiếm sản phẩm</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.item} onPress={() => setModalVisible(true)}>
-            <Icon3 name="delete" size={40} color="#F24822"></Icon3>
+            <Icon3 name="delete" size={36} color="#F24822"></Icon3>
                 <Text style={styles.textItem}>Xoá sản phẩm </Text> 
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.item, {width:'96%'}]} onPress={moveToUser}>
-                <Icon4 name="user-shield" size={40} color="#F24822"></Icon4>
+            <TouchableOpacity style={[styles.item]} onPress={moveToUser}>
+                <Icon4 name="user-shield" size={36} color="#F24822"></Icon4>
                 <Text style={styles.textItem}>Tài khoản</Text>
-                </TouchableOpacity>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.item]} onPress={moveToOrderManagement}>
+                <Icon4 name="th-list" size={36} color="#F24822"></Icon4>
+                <Text style={styles.textItem}>Quản lý đơn</Text>
+            </TouchableOpacity>
         </View>
         <Modal
         animationType="fade"
@@ -131,7 +142,7 @@ const styles = StyleSheet.create({
       marginTop:'-16%',
       borderRadius:10,
       marginBottom:30,
-      width:390,
+      width: width * 0.95,
       height:300,
     },
     containerItem:{
@@ -142,7 +153,7 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap'
     },
     item:{
-        width:190,
+        width:width * 0.46 ,
         height:100,
         backgroundColor:'#fff',
         margin:5,
@@ -171,7 +182,7 @@ const styles = StyleSheet.create({
       marginTop: 22,
     },
     modalView: {
-      width:390,
+      width:width * 0.94,
       height:180,
       margin: 20,
       backgroundColor: '#fff',

@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef} from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, ScrollView, LayoutAnimation, Pressable } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, ScrollView, LayoutAnimation, Pressable, Dimensions } from 'react-native';
 import stylesB from '../assets/css/stylesB'
 import { Props } from '../services/interfaces/navigationTypes';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {getAllFoods} from '../services/foodService/getAllFood'
+
+const { width, height } = Dimensions.get('window');
 
 const HomePage2 = ({ navigation }: Props) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('');
@@ -158,8 +160,8 @@ const styles = StyleSheet.create({
     marginBottom:10
   },
   swapItemFood: {
-    height: 170,
-    width: 170,
+    height: height * 0.2,
+    width: width * 0.41,
     backgroundColor: '#fff',
     margin: 12,
     borderRadius: 30,
@@ -172,7 +174,7 @@ const styles = StyleSheet.create({
   },
   image:{
     marginTop:4,
-    width:160,
+    width:width * 0.39,
     height:136,
     borderRadius:30
   }

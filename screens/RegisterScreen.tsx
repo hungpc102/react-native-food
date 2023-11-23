@@ -3,7 +3,6 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator,
 import stylesB from '../assets/css/stylesB'
 import {Props } from '../services/interfaces/navigationTypes';
 import { register } from '../services/userService.tsx/registerServices'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const RegisterScreen = ({ navigation }: Props) => {
   const [email, setEmail] = useState(''); 

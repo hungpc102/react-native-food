@@ -5,22 +5,22 @@ import { getRefreshTokenFromStorage, saveLoginStatusToStorage, saveUserIdToStora
 
 export const logoutUser = async (navigation:any) => {
   try {
-    const refreshToken = await getRefreshTokenFromStorage();
+    // const refreshToken = await getRefreshTokenFromStorage();
 
-    if (refreshToken) {
-      const response = await axios.delete(userApiLogout, {
-        data: {
-          refreshToken: refreshToken,
-        }
-      })
-      if (response.data.status === 401){
-        alert('Lỗi')
-      }else{
+    // if (refreshToken) {
+    //   const response = await axios.delete(userApiLogout, {
+    //     data: {
+    //       refreshToken: refreshToken,
+    //     }
+    //   })
+      // if (response.data.status === 401){
+      //   alert('Lỗi')
+      // }else{
         await saveLoginStatusToStorage('')
         await saveUserIdToStorage('')
         navigation.navigate('Login')
-      }
-    }
+      // }
+    // }
   } catch (error) {
     console.error('Lỗi khi gọi API logout:', error);
   }

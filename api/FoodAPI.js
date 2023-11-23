@@ -14,6 +14,8 @@ export const apiDeleteFood = foodAPI + '/delete-food/'
 
 export const apiUpdateFood = foodAPI + '/update-food/'
 
+export const apiUpdateQuantity = foodAPI + '/update-quantity/'
+
 
 
 

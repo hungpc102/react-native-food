@@ -31,8 +31,8 @@ const UpdateFood = ({ navigation }: Props) => {
   
   useEffect(() => {
     getFoodById(foodIdNUmber)
-      .then((data) => {
-        const foodData: any = data.food; 
+    .then((data) => {
+        const foodData: any = data
         const imageData =  foodData.FOOD_PICTURE; 
         setImageDataBase64(imageData);
         setFoodName(foodData.FOOD_NAME)
@@ -66,7 +66,7 @@ const UpdateFood = ({ navigation }: Props) => {
       </View>
       
           <TouchableOpacity style={[stylesB.containerButton,styles.containerButton ]} onPress={handleSelectedImage} >
-            <Text style={[stylesB.actionButtonText, {fontSize:16, paddingTop:8}]} >Chọn ảnh từ thư viện</Text>
+            <Text style={[stylesB.actionButtonText, {fontSize:16, paddingTop:10}]} >Thêm ảnh</Text>
           </TouchableOpacity>
       <View style={styles.swapInput}>
 
@@ -135,7 +135,8 @@ const styles = StyleSheet.create({
     alignContent:'center',
     justifyContent:'center',
     marginTop:0,
-    borderRadius:10
+    borderRadius:16,
+    width:120
   },
   swapInput:{
     marginTop:10,
@@ -146,7 +147,7 @@ const styles = StyleSheet.create({
     margin:5,
     height:50,
     width:340,
-    borderRadius:10,
+    borderRadius:16,
     fontSize:18,
     paddingLeft:10,
     backgroundColor: '#fff', 

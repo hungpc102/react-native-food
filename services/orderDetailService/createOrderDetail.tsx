@@ -13,7 +13,7 @@ export const createOrderDetail = async(ORDER_ID:number, FOOD_ID:number, UNIT_QUA
                     ORDER_ID,
                     FOOD_ID, 
                     UNIT_QUANTITY,
-                    UNIT_PRICE
+                    UNIT_PRICE,
                 }
 
                 const  accessToken = await getAccessTokenFromStorage()

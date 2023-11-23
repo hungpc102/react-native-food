@@ -79,6 +79,8 @@ const CartScreen = ({ navigation }: Props) => {
           setTotalPrice(totalPrice);
           setDataUpdated(true);
         }
+      }else{
+       setTotalPrice(0)
       }
       setDataUpdated(true);
     } catch (error) {
@@ -130,21 +132,19 @@ const CartScreen = ({ navigation }: Props) => {
           </View>
 
           <View style={styles.addFood}>
-            <TouchableOpacity onPress={() => handleDecreaseQuantity(item.FOOD_ID, cartItem.QUANTITY)}>
-              <Text style={styles.textAdd}>-</Text>
+            <TouchableOpacity style={styles.textAdd} onPress={() => handleDecreaseQuantity(item.FOOD_ID, cartItem.QUANTITY)}>
+              <Text style={{fontSize:24}}>-</Text>
             </TouchableOpacity>
             <Text style={styles.textQuantity}>{cartItem.QUANTITY}</Text>
-            <TouchableOpacity
+            <TouchableOpacity style={styles.textAdd}
               onPress={() => handleIncreaseQuantity(item.FOOD_ID, item.FOOD_QUANTITY, cartItem.QUANTITY)}>
-              <Text style={styles.textAdd}>+</Text>
+              <Text style={{fontSize:24}}>+</Text>
             </TouchableOpacity>
           </View>
         </View>
       );
-    } else {
-      setTotalPrice(0)
-      return <Text style={styles.item}>Không có món ăn</Text>
-    }
+    } 
+    return null;
   }}
 />
       </View>
@@ -239,24 +239,26 @@ const styles = StyleSheet.create({
   addFood:{
     flexDirection:'row',
     marginRight:20,
-    marginTop:70
+    marginTop:70,
+    justifyContent:'center'
+
   },
   textAdd:{
-    fontSize:22,
     margin:8,
-    paddingTop:1,
     backgroundColor:'#ccc',
     width:34,
     height:34,
     textAlign:'center',
-    borderRadius:5
+    borderRadius:5,
+    justifyContent:'center',
+    alignItems:'center'
   },
   textQuantity:{
     fontSize:18,
-    marginTop:12,
+    marginTop:14,
     height:50,
     width:30,
-    textAlign:'center'
+    textAlign:'center',
   },
   textPrice:{
     color:'red',

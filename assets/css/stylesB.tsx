@@ -1,8 +1,12 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+
+  const {width, height} = Dimensions.get('window')
+
 const stylesB = StyleSheet.create({
     textInput:{
+        paddingLeft:10,
         borderBottomWidth:1,
-        borderColor:"#E6E6E6",
+        borderColor:"#ccc",
         fontSize: 22,
         marginBottom:28,
         width:320,
@@ -15,20 +19,20 @@ const stylesB = StyleSheet.create({
         // justifyContent:'center',
     },
     containerButton:{
-        width:170,
-         height:60,
+         width:width * 0.5,
+         height:height * 0.066,
          borderRadius:30,
          backgroundColor:"#F24822",
          marginTop:10,
          marginBottom:10,
          alignItems: 'center',
+         justifyContent:'center'
        }
        ,
     actionButtonText:{
-        flex:1,
+        // flex:1,
         fontSize:24,
-        textAlign:'center',
-        paddingTop:12,
+        // paddingTop:14,
         fontWeight:'600',
         color:"#fff"
     },

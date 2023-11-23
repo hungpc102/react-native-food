@@ -23,7 +23,7 @@ const SearchScreen = ({ navigation }: Props) => {
             setImageData(images);
           })
           .catch((error) => {
-            console.error('Lỗi khi lấy dữ liệu từ API:', error);
+            // console.error('Lỗi khi lấy dữ liệu từ API:', error);
           });
 
       }, [searchText ]);

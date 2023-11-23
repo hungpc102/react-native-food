@@ -36,23 +36,18 @@ const LoginScreen = ({ navigation }: Props) => {
       <View style={styles.containerLogo}>
         <Image style={styles.logo} source={require('../assets/photoInScreens/FoodKart-login.jpg')} />
       </View>
-        <TextInput value={email} style={stylesB.textInput} placeholder="Tài khoản" autoCapitalize='none' 
+        <TextInput value={email} style={stylesB.textInput} placeholder="Tài khoản" placeholderTextColor="#888" autoCapitalize='none' 
         onChangeText={(text) => setEmail(text)} />
-        <TextInput value={password} style={stylesB.textInput} placeholder="Mật khẩu"  autoCapitalize='none' secureTextEntry={true}
-        onChangeText={(text) => setPassword(text)} // Cập nhật state của mật khẩu
+        <TextInput value={password} style={stylesB.textInput} placeholder="Mật khẩu" placeholderTextColor="#888"  autoCapitalize='none' secureTextEntry={true}
+        onChangeText={(text) => setPassword(text)} 
          />
   
-      {loading ?(
-         <ActivityIndicator size="large" color="#0000ff" />
-      ) : (
-        <>
           <TouchableOpacity  style={stylesB.containerButton} onPress={handleLogin}
            >
               <Text style={stylesB.actionButtonText}>Đăng nhập</Text>
           
           </TouchableOpacity>
-        </> 
-      )}
+      
       <View style={{flexDirection:'row', marginTop:20}}>
          <TouchableOpacity onPress={toggleCheckbox} style={styles.checkboxContainer}>
       <View
@@ -79,6 +74,9 @@ const LoginScreen = ({ navigation }: Props) => {
       <TouchableOpacity onPress={() => navigation.navigate('HelpPage')}>
         <Text style={[styles.textHelp,stylesB.textDirectional]} >Cần trợ giúp</Text>
       </TouchableOpacity>
+      {loading && (
+                     <ActivityIndicator size="large" color="#F24822" style={{ marginTop: '80%', position:'absolute', width:'100%'}} />
+                )}
     </KeyboardAvoidingView>
   );
 };

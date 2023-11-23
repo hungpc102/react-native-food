@@ -35,7 +35,7 @@ const handleCreateFood = () => {
       </View>
       
           <TouchableOpacity style={[stylesB.containerButton,styles.containerButton ]} onPress={handlePickImage} >
-            <Text style={[stylesB.actionButtonText, {fontSize:16, paddingTop:8}]} >Chọn ảnh từ thư viện</Text>
+            <Text style={[stylesB.actionButtonText, {fontSize:16}]} >Thêm ảnh</Text>
           </TouchableOpacity>
       <View style={styles.swapInput}>
 
@@ -67,7 +67,7 @@ const handleCreateFood = () => {
           
       </View>
         <TouchableOpacity style={[stylesB.containerButton,styles.containerButton, {width:340, height:50} ]} onPress={handleCreateFood} >
-        <Text style={[stylesB.actionButtonText, {fontSize:18, paddingTop:14}]} >Thêm món ăn</Text>
+        <Text style={[stylesB.actionButtonText, {fontSize:18}]} >Thêm món ăn</Text>
         </TouchableOpacity>
 
     </KeyboardAvoidingView>
@@ -102,7 +102,8 @@ const styles = StyleSheet.create({
     alignContent:'center',
     justifyContent:'center',
     marginTop:0,
-    borderRadius:10
+    borderRadius:16,
+    width: 120
   },
   swapInput:{
     marginTop:10,
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
     margin:5,
     height:50,
     width:340,
-    borderRadius:10,
+    borderRadius:16,
     fontSize:18,
     paddingLeft:10,
     backgroundColor: '#fff', 

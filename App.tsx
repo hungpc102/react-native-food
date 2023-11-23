@@ -13,6 +13,8 @@ import AddFoodScreen from './screens/AddFoodScreen';
 import UserScreen from './screens/UserScreen';
 import UpdateFood from './screens/UpdateFood'
 import FoodDelivery from './screens/FoodDelivery'
+import OrderManagement from './screens/OrderManagement'
+import InvoiceScreen from './screens/InvoiceScreen';
 
 const Stack = createStackNavigator();
 
@@ -34,11 +36,14 @@ const App = () => {
         <Stack.Screen name="FoodDetail" component={FoodDetail} options={commonScreenOptions}/>
         <Stack.Screen name="SearchScreen" component={SearchScreen} options={commonScreenOptions} />
         <Stack.Screen name="UserScreen" component={UserScreen} options={commonScreenOptions} />
-        <Stack.Screen name="ButtonBar" component={ButtonBar} options={{ headerShown: false}} /> 
+        <Stack.Screen name="ButtonBar" component={ButtonBar} options={{ headerShown: false, headerTitle: 'Giỏ hàng'}} /> 
         <Stack.Screen name="Restaurant" component={Restaurant} options={{ headerShown: false}}/>
         <Stack.Screen name="AddFoodScreen" component={AddFoodScreen} options={commonScreenOptions}/>
         <Stack.Screen name="UpdateFood" component={UpdateFood} options={commonScreenOptions}/>
         <Stack.Screen name="FoodDelivery" component={FoodDelivery} options={{ headerShown: true, headerTitle: 'Thanh toán'}}/>
+        <Stack.Screen name="OrderManagement" component={OrderManagement} options={commonScreenOptions}/>
+        <Stack.Screen name="InvoiceScreen" component={InvoiceScreen} options={commonScreenOptions}/>
+
       </Stack.Navigator>
     </NavigationContainer>
   );
